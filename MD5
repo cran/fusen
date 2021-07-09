@@ -1,13 +1,13 @@
-102033d562da509d0995d92f712e0054 *DESCRIPTION
+266de248372380a9d518e37f209b411d *DESCRIPTION
 05b244661505b5129abd2d115a783f4c *LICENSE
 8d19860f430dcbd6eaf71c42d2648910 *NAMESPACE
-e1911732e28cc2f48c066b17ba3c64ad *NEWS.md
+8784f26a0525ce6652e8e040ad01bb2f *NEWS.md
 906ecfee8aab875154eaf0f13d314111 *R/add_dev_history.R
 29986d4897dffd4247e4ca6d6fb6bf65 *R/fill_description.R
 7cc4e4f93ce283917a1198b359d55748 *R/globals.R
 5ccb41a2615c160bbf04add5e15ad01f *R/inflate.R
 b56ff2b193ecba52f9ec7f3b10cca008 *R/utils-pipe.R
-cb1d387fb485dab976688546f29a180a *README.md
+ddb644673ff909c61526d388d3c1eddb *README.md
 95430f04896003c24107a58adaa604d2 *build/vignette.rds
 0707178b829fd24edb35357aaa9709cf *inst/dev-template-additional.Rmd
 26eaef58bde0f71169b89935eb792028 *inst/dev-template-full.Rmd
@@ -15,7 +15,7 @@ ad4886e562ec0518fe91b204c5a87312 *inst/dev-template-minimal.Rmd
 5cc24e2e9c6ff642c3c60a76d4b64244 *inst/dev-template-teaching.Rmd
 7782f0b55d1840304241578be3452fb4 *inst/doc/How-to-use-fusen.R
 ec3ecd45f5a81ec31315ceaa1f1c6879 *inst/doc/How-to-use-fusen.Rmd
-c087aa9164828b5cfd2fd4bdfb9a8096 *inst/doc/How-to-use-fusen.html
+6c43910746a6128031fa843de8ff3b6f *inst/doc/How-to-use-fusen.html
 d2cae838d5f07039d79dfb3778bf2515 *inst/doc/Maintain-packages-with-fusen.R
 8a6118a9e5c71ff3dd81bc2572e68488 *inst/doc/Maintain-packages-with-fusen.Rmd
 4f996472c849067d721f04587aced0ab *inst/doc/Maintain-packages-with-fusen.html
@@ -34,7 +34,7 @@ d3a13a9884387776df1332a429749069 *man/inflate.Rd
 8f4aad003a999fae004ba9361f9a99d6 *man/pipe.Rd
 0622a97a2aaa3c342f09636052c2d7f5 *tests/spelling.R
 d5243da767b51b93d6060685e2caa6da *tests/testthat.R
-1acb1e2c9cd6f04c4a4f346d8c09f555 *tests/testthat/test-add_dev_history.R
+7aae39ce71b5778c9bda084d00ccab2d *tests/testthat/test-add_dev_history.R
 92509c6c567ba5259b6c1de106441c0f *tests/testthat/test-fill_description.R
 7f72da41d42baa75f6ac48cc55ea1f48 *tests/testthat/test-inflate.R
 ec3ecd45f5a81ec31315ceaa1f1c6879 *vignettes/How-to-use-fusen.Rmd

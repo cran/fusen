@@ -1,6 +1,6 @@
 Package: fusen
 Title: Build a Package from Rmarkdown File
-Version: 0.2.1
+Version: 0.2.2
 Authors@R: 
     c(person(given = "Sebastien",
              family = "Rochette",
@@ -27,9 +27,9 @@ Encoding: UTF-8
 Language: en-US
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2021-07-07 08:56:36 UTC; srochett
+Packaged: 2021-07-09 13:18:33 UTC; srochett
 Author: Sebastien Rochette [aut, cre] (<https://orcid.org/0000-0002-1565-9313>),
   ThinkR [cph]
 Maintainer: Sebastien Rochette <sebastien@thinkr.fr>
 Repository: CRAN
-Date/Publication: 2021-07-08 06:40:02 UTC
+Date/Publication: 2021-07-09 13:50:05 UTC
