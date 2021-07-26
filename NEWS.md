@@ -1,3 +1,11 @@
+# v0.2.3
+
+* Update unit tests
+* Show check outputs in console
+* Ask before overwriting everything
+* Check Description Title and description fields
+* Check if folder name is correct package name
+
 # v0.2.2
 
 * Protect tests from older Pandoc versions

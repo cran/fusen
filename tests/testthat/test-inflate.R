@@ -10,11 +10,13 @@ dev_file <- add_dev_history(pkg = dummypackage, overwrite = TRUE, open = FALSE)
 usethis::with_project(dummypackage, {
 
   # More complicated example for tests
-  file.copy(
-    system.file("tests-templates/dev-template-tests.Rmd", package = "fusen"),
-    dev_file,
-    overwrite = TRUE
-  )
+    testfile <- "tests-templates/dev-template-tests.Rmd"
+    file.copy(
+      system.file(testfile, package = "fusen"),
+      dev_file,
+      overwrite = TRUE
+    )
+
   inflate(pkg = dummypackage, rmd = dev_file, name = "exploration", check = FALSE)
 
   test_that("inflate() worked correctly", {
@@ -25,6 +27,9 @@ usethis::with_project(dummypackage, {
     expect_true(file.exists(my_other_median_file))
     my_third_median_file <- file.path(dummypackage, "R", "my_third_median.R")
     expect_true(file.exists(my_third_median_file))
+    my_sixth_median_file <- file.path(dummypackage, "R", "my.sixth.median_function.R")
+    expect_true(file.exists(my_sixth_median_file))
+
     # examples in R files
     my_median_lines <- readLines(my_median_file)
     expect_true(all(my_median_lines[10:12] == c(
@@ -38,6 +43,11 @@ usethis::with_project(dummypackage, {
     my_third_median_lines <- readLines(my_third_median_file)
     # _no example
     expect_true(all(!grepl("#' @examples", my_third_median_lines)))
+    # dot in name
+    my_sixth_median_lines <- readLines(my_sixth_median_file)
+    expect_true(all(my_sixth_median_lines[9:11] == c(
+      "#' @examples", "#' my.sixth.median_function(1:12)", "#' my.sixth.median_function(8:20)"
+    )))
 
     # vignette
     expect_true(file.exists(file.path(dummypackage, "vignettes", "exploration.Rmd")))
@@ -49,19 +59,27 @@ usethis::with_project(dummypackage, {
     expect_true(file.exists(
       file.path(dummypackage, "tests", "testthat", "test-my_other_median.R")
     ))
+    expect_true(file.exists(
+      file.path(dummypackage, "tests", "testthat", "test-my.sixth.median_function.R")
+    ))
 
     # Namespace
     expect_true(file.exists(file.path(dummypackage, "NAMESPACE")))
   })
 })
 
+
 # Test package no check errors ----
 usethis::with_project(dummypackage, {
-  # If this check is run inside a not "--as-cran" check, then it wont work as expected
-  check_out <- rcmdcheck::rcmdcheck(dummypackage, quiet = TRUE,
-                                    args = c("--no-manual"))
 
   test_that("inflate() output error", {
+    # Do not check inside check if on CRAN
+    skip_on_os(os = c("windows", "solaris"))
+
+    # If this check is run inside a not "--as-cran" check, then it wont work as expected
+    check_out <- rcmdcheck::rcmdcheck(dummypackage, quiet = TRUE,
+                                      args = c("--no-manual"))
+
     # No errors
     expect_true(length(check_out[["errors"]]) == 0)
     # 1 warning = License
@@ -84,7 +102,33 @@ usethis::with_project(dummypackage, {
   unlink(file.path(dummypackage, "tests"), recursive = TRUE)
 })
 
+# Test no problem with special character in YAML ----
+if (packageVersion("parsermd") > "0.1.2") {
+  dummypackage.special <- file.path(tmpdir, "dummypackage.special")
+  dir.create(dummypackage.special)
 
+  # {fusen} steps
+  fill_description(pkg = dummypackage.special, fields = list(Title = "Dummy Package"))
+  dev_file <- add_dev_history(pkg = dummypackage.special, overwrite = TRUE, open = FALSE)
+
+  usethis::with_project(dummypackage.special, {
+
+    testfile <- "tests-templates/dev-template-tests-special-char.Rmd"
+    file.copy(
+      system.file(testfile, package = "fusen"),
+      dev_file,
+      overwrite = TRUE
+    )
+
+    inflate(pkg = dummypackage.special, rmd = dev_file, name = "exploration", check = FALSE)
+
+    test_that("inflate with special yaml worked correctly", {
+      # R files
+      my_median_file <- file.path(dummypackage.special, "R", "my_median.R")
+      expect_true(file.exists(my_median_file))
+    })
+  })
+}
 
 # Test no attachment and no check when asked ----
 unlink(file.path(dummypackage, "DESCRIPTION"), recursive = TRUE)
@@ -111,7 +155,7 @@ usethis::with_project(dummypackage, {
     overwrite = TRUE
   )
   inflate(pkg = dummypackage, rmd = dev_file, name = "exploration", check = FALSE)
-  test_that("inflate() output error", {
+  test_that("inflate() output no error", {
     expect_true(file.exists(file.path(dummypackage, "vignettes", "exploration.Rmd")))
     expect_true(file.exists(file.path(dummypackage, "R", "my_median.R")))
     expect_true(!file.exists(file.path(dummypackage, "tests", "testthat", "test-my_median.R")))
@@ -129,9 +173,36 @@ usethis::with_project(dummypackage, {
     dev_file,
     overwrite = TRUE
   )
-  test_that("inflate() output error", {
+  test_that("inflate() output message", {
     expect_message(inflate(pkg = dummypackage, rmd = dev_file, name = "exploration", check = FALSE))
   })
+  # Clean R, tests and vignettes
+  unlink(file.path(dummypackage, "R"), recursive = TRUE)
+  unlink(file.path(dummypackage, "vignettes"), recursive = TRUE)
+  unlink(file.path(dummypackage, "tests"), recursive = TRUE)
+})
+
+# Tests errors - vignette already exists ----
+usethis::with_project(dummypackage, {
+
+  inflate(pkg = dummypackage, rmd = dev_file, name = "exploration",
+          check = FALSE, overwrite = "yes")
+
+  test_that("inflate() output error when second time (not interactive)", {
+    expect_error(inflate(pkg = dummypackage, rmd = dev_file, name = "exploration",
+                         check = FALSE))
+    expect_error(inflate(pkg = dummypackage, rmd = dev_file, name = "exploration",
+                         check = FALSE, overwrite = 'no'))
+  })
+
+  # No error with overwrite = 'yes'
+  inflate(pkg = dummypackage, rmd = dev_file, name = "exploration",
+          check = FALSE, overwrite = "yes")
+
+  test_that("inflate() output no error", {
+    expect_true(file.exists(file.path(dummypackage, "vignettes", "exploration.Rmd")))
+  })
+
   # Clean R, tests and vignettes
   unlink(file.path(dummypackage, "R"), recursive = TRUE)
   unlink(file.path(dummypackage, "vignettes"), recursive = TRUE)
@@ -226,6 +297,24 @@ usethis::with_project(dummypackage, {
   unlink(file.path(dummypackage, "tests"), recursive = TRUE)
 })
 
+usethis::with_project(dummypackage, {
+  inflate(pkg = dummypackage, rmd = dev_file, name = "# y  _ p n@ \u00E9 ! 1", check = FALSE)
+  # Vignette name is also cleaned by {usethis} for special characters
+  vignette_path <- file.path(dummypackage, "vignettes", "y-p-n---1.Rmd")
+
+  test_that("vignette is created with clean name", {
+    expect_true(file.exists(vignette_path))
+    # usethis::use_vignette writes in UTF-8
+    vig_lines <- readLines(vignette_path, encoding = "UTF-8")
+    expect_true(sum(grepl("# y  _ p n@ \u00E9 ! 1", vig_lines, fixed = TRUE)) == 2)
+    expect_true(sum(grepl("y-p-n---1", vig_lines, fixed = TRUE)) == 0)
+  })
+
+  # Clean R, tests and vignettes
+  unlink(file.path(dummypackage, "R"), recursive = TRUE)
+  unlink(file.path(dummypackage, "vignettes"), recursive = TRUE)
+  unlink(file.path(dummypackage, "tests"), recursive = TRUE)
+})
 # Delete dummy package
 unlink(dummypackage, recursive = TRUE)
 
@@ -244,5 +333,8 @@ usethis::with_project(dummypackage, {
 
 # Delete dummy package
 unlink(dummypackage, recursive = TRUE)
+if (exists("dummypackage.special")) {
+  unlink(dummypackage.special, recursive = TRUE)
+}
 
 # Do not create a second package with {fusen} in the same session, as it will mess up with `setwd()` and {usethis} needs these `setwd()`...
