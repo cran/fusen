@@ -177,14 +177,69 @@ Maintaining such a package requires a choice:</p>
 </ul>
 <p>=&gt; This is the way I add new functionalities in packages that started in the old way, or which I build in collaboration with other devs.</p>
 </div>
-<div id="what-about-packages-already-built-the-old-way" class="section level2">
-<h2>What about packages already built the old way ?</h2>
+</div>
+<div id="what-about-packages-already-built-the-old-way" class="section level1">
+<h1>What about packages already built the old way ?</h1>
 <p>The “dev_history.Rmd” template only modifies files related to functions presented inside the template. This does not remove or modify previous functions, tests or vignettes, provided that names are different.</p>
 <ul>
 <li>{fusen} itself was started in the classical way before having enough functions to be able to build a package from itself. This does not prevent me at all to use {fusen} to build himself now !</li>
 <li>If you want to modify existing functionalities, you will need to continue maintain your already-built package in the classical way</li>
 <li>If you want to add new functionnalities, correctly documented and tested, you can use {fusen}. This will not delete previous work.</li>
 <li>Use the “Option 2” above to continue after the development of your functionnality</li>
+</ul>
+<div id="lets-try-to-convince-package-developers-with-an-example" class="section level2">
+<h2>Let’s try to convince package developers with an example</h2>
+<ul>
+<li>Install {fusen} : <code>install.packages(&quot;fusen&quot;)</code></li>
+<li>Open a project for <strong>one of your already existing package</strong>
+<ul>
+<li>Commit your previous state if you are afraid of {fusen}</li>
+<li>If you are not sure enough to do it on an existing package, then follow the guide in <a href="https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html">“How to use fusen”</a></li>
+</ul></li>
+<li>Run in the Console : <code>fusen::add_dev_history(name = &quot;additional&quot;)</code>
+<ul>
+<li>A Rmd file appears in “dev/dev_history.Rmd”. Open it.</li>
+</ul></li>
+<li>Add a new function in the <code>function</code> chunk. For instance:</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; My median</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param x Vector of Numeric values</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @inheritParams stats::median</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Median of vector x</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>my_median <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {<span class="fu">stop</span>(<span class="st">&quot;x should be numeric&quot;</span>)}</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  stats<span class="sc">::</span><span class="fu">median</span>(x, <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<ul>
+<li>Add a corresponding example in the <code>example</code> chunk. For instance:</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_median</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)</span></code></pre></div>
+<ul>
+<li>Add a corresponding unit test in the <code>test</code> chunk. For instance:</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;my_median works properly and show error if needed&quot;</span>, {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">my_median</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) <span class="sc">==</span> <span class="fl">6.5</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">my_median</span>(<span class="st">&quot;text&quot;</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<ul>
+<li>Run command of the last chunk: <code>fusen::inflate(rmd = &quot;dev/dev_history.Rmd&quot;)</code>
+<ul>
+<li>This will run {attachment} behind the scene and may modify the list of dependencies in the DESCRIPTION file accordingly. Use <code>fusen::inflate(rmd = &quot;dev/dev_history.Rmd&quot;, document = FALSE)</code> to avoid that.</li>
+<li>This will also run <code>devtools::check()</code>. Use <code>fusen::inflate(rmd = &quot;dev/dev_history.Rmd&quot;, check = FALSE)</code> to avoid that.</li>
+</ul></li>
+</ul>
+<p><strong>That’s it!</strong><br />
+You added a new function in your package, along with example, test and a new vignette:</p>
+<ul>
+<li>R/my_median.R</li>
+<li>tests/testthat/test-my_median.R</li>
+<li>vignettes/exploration.Rmd</li>
 </ul>
 </div>
 </div>
