@@ -8,6 +8,9 @@ knitr::opts_chunk$set(
 library(fusen)
 
 ## ---- eval=FALSE--------------------------------------------------------------
+#  add_flat_template(template = "add")
+
+## ---- eval=FALSE--------------------------------------------------------------
 #  #' My median
 #  #'
 #  #' @param x Vector of Numeric values

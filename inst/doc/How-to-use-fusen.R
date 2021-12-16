@@ -7,22 +7,33 @@ knitr::opts_chunk$set(
 ## ----setup--------------------------------------------------------------------
 library(fusen)
 
+## ----example-dontrun, echo=TRUE, eval=FALSE-----------------------------------
+#  #' \dontrun{
+#  an_example <- 1 + 1
+#  an_example
+#  #' }
+#  
+#  #' OR
+#  
+#  #' \dontrun{
+#  #' an_example <- 1 + 1
+#  #' an_example
+#  #' }
+
 ## ----example------------------------------------------------------------------
 # Create a new project
-tmpdir <- tempdir()
-dummypackage <- file.path(tmpdir, "dummypackage")
+dummypackage <- tempfile("dummypackage")
 dir.create(dummypackage)
 
-# Add
-add_dev_history(pkg = dummypackage)
+# Add an additional dev template
+add_flat_template(template = "add", pkg = dummypackage)
 
 # Delete dummy package
 unlink(dummypackage, recursive = TRUE)
 
 ## ----example-2----------------------------------------------------------------
 # Create a new project
-tmpdir <- tempdir()
-dummypackage <- file.path(tmpdir, "dummypackage")
+dummypackage <- tempfile("dummypackage")
 dir.create(dummypackage)
 
 fill_description(
@@ -45,22 +56,43 @@ unlink(dummypackage, recursive = TRUE)
 
 ## ----example-3, eval = FALSE--------------------------------------------------
 #  # Create a new project
-#  tmpdir <- tempdir()
-#  dummypackage <- file.path(tmpdir, "dummypackage")
+#  dummypackage <- tempfile("dummypackage")
 #  dir.create(dummypackage)
 #  
 #  # {fusen} steps
 #  fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package"))
-#  dev_file <- add_dev_history(pkg = dummypackage, overwrite = TRUE)
-#  inflate(pkg = dummypackage, rmd = dev_file, name = "Exploration of my Data", check = FALSE)
+#  dev_file <- add_flat_template(template = "teaching",
+#                                pkg = dummypackage, overwrite = TRUE)
+#  inflate(
+#    pkg = dummypackage,
+#    flat_file = dev_file,
+#    vignette_name = "Exploration of my Data",
+#    check = FALSE
+#  )
 #  
 #  # Explore directory of the package
-#  # browseURL(dummypackage)
+#  browseURL(dummypackage)
 #  
-#  # Try pkgdown build
-#  # pkgdown::build_site(dummypackage)
-#  # usethis::use_build_ignore("docs")
-#  # usethis::use_git_ignore("docs")
 #  # Delete dummy package
 #  unlink(dummypackage, recursive = TRUE)
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  # Create a new project
+#  dummypackage <- tempfile(pattern = "dummy")
+#  
+#  # {fusen} steps
+#  dev_file <- create_fusen(dummypackage, template = "teaching", open = FALSE)
+#  # Description
+#  fusen::fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package"))
+#  
+#  # From inside the package
+#  usethis::with_project(dummypackage, {
+#    # Define License with use_*_license()
+#    usethis::use_mit_license("Sébastien Rochette")
+#  
+#    # You may need to execute inflate() in the console directly
+#    fusen::inflate(pkg = dummypackage,
+#                   flat_file = dev_file,
+#                   vignette_name = "Get started")
+#  })
 

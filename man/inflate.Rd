@@ -6,25 +6,35 @@
 \usage{
 inflate(
   pkg = ".",
-  rmd = file.path("dev", "dev_history.Rmd"),
-  name = "exploration",
+  flat_file = file.path("dev", "flat_full.Rmd"),
+  vignette_name = "Get started",
+  open_vignette = TRUE,
   check = TRUE,
   document = TRUE,
-  overwrite = c("ask", "yes", "no")
+  overwrite = "ask",
+  ...
 )
 }
 \arguments{
 \item{pkg}{Path to package}
 
-\item{rmd}{Path to Rmarkdown file to inflate}
+\item{flat_file}{Path to Rmarkdown file to inflate}
 
-\item{name}{Name of the resulting vignette}
+\item{vignette_name}{Character. Title of the resulting vignette.
+Use \code{NA} if you do not want to create a vignette.}
+
+\item{open_vignette}{Logical. Whether to open vignette file at the end of the process}
 
 \item{check}{Logical. Whether to check package after Rmd inflating}
 
 \item{document}{Logical. Whether to document your package using \code{\link[attachment:att_amend_desc]{att_amend_desc}}}
 
-\item{overwrite}{Logical. Whether to overwrite vignette and functions if already exists.}
+\item{overwrite}{Logical (TRUE, FALSE) or character ("ask", "yes", "no).
+Whether to overwrite vignette and functions if already exists.}
+
+\item{...}{Arguments passed to \code{rcmdcheck::rcmdcheck()}.
+For example, you can do \code{inflate(check = TRUE, quiet = TRUE)}, where \code{quiet} is
+passed to \code{rcmdcheck::rcmdcheck()}.}
 }
 \value{
 Package structure. Return path to current package.
@@ -34,22 +44,22 @@ Inflate Rmd to package
 }
 \examples{
 # Create a new project
-tmpdir <- tempdir()
-dummypackage <- file.path(tmpdir, "dummypackage")
+dummypackage <- tempfile("dummypackage")
 dir.create(dummypackage)
 
 # {fusen} steps
+dev_file <- add_flat_template(template = "full", pkg = dummypackage, overwrite = TRUE)
+flat_file <- dev_file[grepl('flat', dev_file)]
 fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package"))
-dev_file <- add_dev_history(pkg = dummypackage, overwrite = TRUE)
-inflate(pkg = dummypackage, rmd = dev_file, name = "Exploration of my Data", check = FALSE)
+inflate(pkg = dummypackage, flat_file = flat_file,
+  vignette_name = "Exploration of my Data", check = FALSE)
 
 # Explore directory of the package
 # browseURL(dummypackage)
 
 # Try pkgdown build
+# usethis::use_pkgdown()
 # pkgdown::build_site(dummypackage)
-# usethis::use_build_ignore("docs")
-# usethis::use_git_ignore("docs")
 # Delete dummy package
 unlink(dummypackage, recursive = TRUE)
 }

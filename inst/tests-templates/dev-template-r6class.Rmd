@@ -1,0 +1,38 @@
+---
+title: "dev_history.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+# My R6 function
+
+```{r function-r6}
+Simple <- R6::R6Class("Simple",
+  public = list(
+    x = 1,
+    getx = function() self$x
+  )
+)
+```
+
+# My other R6 function
+
+```{r function-r6}
+Simple2 <- R6Class("Simple2",
+  public = list(
+    x = 1,
+    getx = function() self$x
+  )
+)
+```
+
+```{r development-1, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/dev_history.Rmd")
+```

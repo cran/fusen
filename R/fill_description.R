@@ -12,8 +12,7 @@
 #'
 #' @examples
 #' # Create a new project
-#' tmpdir <- tempdir()
-#' dummypackage <- file.path(tmpdir, "dummypackage")
+#' dummypackage <- tempfile("dummypackage")
 #' dir.create(dummypackage)
 #'
 #' fill_description(
@@ -34,8 +33,8 @@
 #' # Delete dummy package
 #' unlink(dummypackage, recursive = TRUE)
 fill_description <- function(pkg = ".", fields, overwrite = FALSE) {
-  old <- setwd(pkg)
-  on.exit(setwd(old))
+  # old <- setwd(pkg)
+  # on.exit(setwd(old))
 
   path <- normalizePath(pkg)
 
@@ -43,11 +42,12 @@ fill_description <- function(pkg = ".", fields, overwrite = FALSE) {
 
   if (capwords(fields[["Title"]]) != fields[["Title"]]) {
     fields[["Title"]] <- capwords(fields[["Title"]])
-    cli::cli_alert_warning(paste("Title was modified to Title Case:", fields[["Title"]]))
+    cli::cli_alert_warning(paste("Title was modified to 'Title Case'."))
   }
 
   if (!is.null(fields[["Description"]]) && !grepl("[.]$", fields[["Description"]])) {
-    stop("Description field is a sentence and should finish with a dot.")
+    fields[["Description"]] <- paste0(fields[["Description"]], ".")
+    cli::cli_alert_warning(paste("Description field should be a sentence. A dot was added at the end."))
   }
 
   if (file.exists(desc_file) & !isTRUE(overwrite)) {
@@ -60,9 +60,11 @@ fill_description <- function(pkg = ".", fields, overwrite = FALSE) {
     roxygen = TRUE,
     fields = fields
   )
+
   desc <- desc::desc(text = glue::glue("{names(fields_new)}: {fields_new}"))
 
   desc$write(file = desc_file)
+
   desc_file
 }
 

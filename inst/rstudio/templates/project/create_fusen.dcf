@@ -1,0 +1,15 @@
+Binding: create_fusen_gui
+Title: Package using {fusen}
+OpenFiles: dev/*
+Icon: fusen.png
+
+Parameter: template
+Widget: SelectInput
+Label: Choose a {fusen} template
+Fields: full, minimal, teaching
+
+Parameter: with_git
+Widget: CheckboxInput
+Label: Create a git repository
+Default: Off
+Position: left
