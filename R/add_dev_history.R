@@ -32,8 +32,7 @@
 add_dev_history <- function(pkg = ".", overwrite = FALSE,
                             open = TRUE, dev_dir = "dev",
                             name = c("full", "minimal", "additional", "teaching")) {
-
-  .Deprecated('add_flat_template', package = 'fusen', old = 'add_dev_history')
+  .Deprecated("add_flat_template", package = "fusen", old = "add_dev_history")
 
   name <- match.arg(name)
 
@@ -45,28 +44,4 @@ add_dev_history <- function(pkg = ".", overwrite = FALSE,
     overwrite = overwrite,
     open = open
   )
-}
-
-#' Clean names for any file and package
-#' @param name Character to clean
-#' @param to_pkg Transform all non authorized characters to dots for packages, instead of dash
-#' @noRd
-asciify_name <- function(name, to_pkg = FALSE) {
-  # name <- "@.-y  _ p n@ é ! 1"
-  cleaned_name <- gsub("^[.]*|^-|-$", "",
-                       gsub("-+", "-",
-                            gsub("-_|_-", "-",
-                                 gsub("[^([:alnum:]*_*-*)*]", "-", name))))
-  # grepl("^[[:alpha:]][[:alnum:]_-]*$", cleaned_name)
-
-  if (isTRUE(to_pkg)) {
-    cleaned_name <- gsub("[^a-zA-Z0-9]+", ".",
-                         gsub("^[0-9]+", "", cleaned_name))
-  } else {
-    # asciify from {usethis} usethis:::asciify()
-    cleaned_name <- tolower(
-        gsub("[^a-zA-Z0-9_-]+", "-", cleaned_name)
-    )
-  }
-  cleaned_name
 }

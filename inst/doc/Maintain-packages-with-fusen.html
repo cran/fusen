@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -450,6 +451,63 @@ You added a new function in your package, along with example, test and a new vig
 <li>vignettes/get-started.Rmd</li>
 </ul>
 </div>
+</div>
+<div id="compare-a-classical-way-of-building-packages-with-the-fusen-way" class="section level1">
+<h1>Compare a classical way of building packages with the {fusen} way</h1>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Classical with {devtools}
+</th>
+<th style="text-align:left;">
+With {fusen}
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<br />- File &gt; New Project &gt; New directory &gt; Package with devtools<br />  + Or <code>devtools::create()</code>
+</td>
+<td style="text-align:left;">
+<br />- File &gt; New Project &gt; New directory &gt; Package with {fusen}<br /> + Or <code>fusen::create_fusen()</code>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<br />- Open “DESCRIPTION” file <br />- Write your information <br />- Run function for the desired license in the console <br />  + <code>usethis::use_*_license()</code>
+</td>
+<td style="text-align:left;">
+<br />- Fill your information in the opened flat file<br />- Execute the chunk <code>description</code>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<br />- Create and open a file for your functions in “R/”<br />   + <code>usethis::use_r(&quot;my_fonction&quot;)</code> <br />- Write the code of your function <br />- Write a reproducible example for your function <br /><br />- Open DESCRIPTION file and fill the list of dependencies required <br /><br />- Create and open a new file for your tests in “tests/testthat/” <br />   + <code>usethis::use_testthat()</code> <br />   + <code>usethis::use_test(&quot;my_fonction&quot;)</code> <br />- Write some unit tests for your function <br /><br />- Create and open a new file for a vignette in “vignettes/” <br />   + <code>usethis::use_vignette(&quot;Vignette title&quot;)</code> <br />   <br />- Open DESCRIPTION file and fill the list of “Suggests” dependencies required
+</td>
+<td style="text-align:left;">
+<br />- Write code, examples and test in the unique opened flat file
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<br />- Generate documentation <br /> + Either <code>attachment::att_amend_desc()</code> <br /> + Or <code>roxygen2::roxygenise()</code> <br /> <br />- Check the package <br /> + <code>devtools::check()</code> =&gt; <code>0 errors, 0 warnings, 0 notes</code>
+</td>
+<td style="text-align:left;">
+<br />- Inflate your flat file<br /> + Execute <code>fusen::inflate()</code> in the last “development” chunk
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+=&gt; For one function, you need to switch regularly between 4 files
+</td>
+<td style="text-align:left;">
+=&gt; For one function, you need only one file
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

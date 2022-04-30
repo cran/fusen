@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -334,8 +335,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fusen)</span></code></pre></div>
-<div id="how-to-use-fusen" class="section level1">
-<h1>How to use {fusen}</h1>
+<div id="all-steps-to-create-a-package-with-fusen-from-one-rmd-file" class="section level1">
+<h1>All steps to create a package with {fusen} from one Rmd file</h1>
 <ul>
 <li>Create a new directory / new project with
 <ul>
@@ -357,105 +358,33 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li>Chunk named <code>tests</code> gets the code for unit testing</li>
 <li>Chunk named <code>development</code> gets the code for development purposes, usually only used once like {usethis} functions</li>
 </ul></li>
-<li>Inflate the flat template to transform it as an inflated package with functions, unit tests and the current Rmd template transformed as a vignette. And check.</li>
+<li>Run the <code>dev-inflate</code> chunk to inflate the flat template and transform it as an inflated package with functions, unit tests and the current Rmd template transformed as a vignette. And check.</li>
 <li>Build your {pkgdown} site to verify everything is at the right place</li>
 </ul>
 <blockquote>
 <p>Create multiple <code>&quot;flat_xxx.Rmd&quot;</code> files with <code>fusen::add_flat_template(template = &quot;add&quot;)</code> if needed</p>
 </blockquote>
-<div id="limitations" class="section level2">
-<h2>Limitations</h2>
-<ul>
-<li>One title / one chunk is for one function</li>
-<li><code>examples</code> and <code>tests</code> chunks need to be placed after the associated <code>function</code> chunk</li>
-<li>You can add sub-functions in the <code>function</code> chunk to store them in the same R file, but they won’t have <code>@examples</code>. Only the first function of the chunk will be able to get examples.</li>
-<li>As for any Rmarkdown file, chunk names need to be unique. Thus, you better use <code>examples-myfunction</code>, <code>examples-myotherfunction</code>, …</li>
-<li><em>Do not forget to regularly clear your Workspace to avoid functions hidden by global environment</em></li>
-</ul>
+<div id="fill-your-package-description" class="section level2">
+<h2>Fill your package Description</h2>
+<p>Fonction <code>fill_description()</code> requires the description of your package: What does it do? Who are the developers?<br />
+This will fill the DESCRIPTION file in the proper way.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fill_description</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">pkg =</span> dummypackage,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fields =</span> <span class="fu">list</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Title =</span> <span class="st">&quot;Build A Package From Rmarkdown file&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">Description =</span> <span class="fu">paste</span>(<span class="st">&quot;Use Rmarkdown First method to build your package.&quot;</span>, </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;Start your package with documentation.&quot;</span>, </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;Everything can be set from a Rmarkdown file in your project.&quot;</span>),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Authors@R</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">person</span>(<span class="st">&quot;Sebastien&quot;</span>, <span class="st">&quot;Rochette&quot;</span>, <span class="at">email =</span> <span class="st">&quot;sebastien@thinkr.fr&quot;</span>, </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">role =</span> <span class="fu">c</span>(<span class="st">&quot;aut&quot;</span>, <span class="st">&quot;cre&quot;</span>), <span class="at">comment =</span> <span class="fu">c</span>(<span class="at">ORCID =</span> <span class="st">&quot;0000-0002-1565-9313&quot;</span>)),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">person</span>(<span class="at">given =</span> <span class="st">&quot;ThinkR&quot;</span>, <span class="at">role =</span> <span class="st">&quot;cph&quot;</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="short-names" class="section level2">
-<h2>Short names</h2>
-<ul>
-<li>Chunk short names are possible:
-<ul>
-<li><code>function</code> can be named <code>fun-</code> or <code>fun_</code> or <code>fun-my_function_name</code></li>
-<li><code>example</code> can be named <code>ex-</code> or <code>ex_</code> or <code>ex-my_function_name</code></li>
-<li><code>tests</code> can be named <code>test-</code> or <code>test-my_function_name</code></li>
-<li><code>development</code> can be named <code>dev-</code> or <code>dev_</code> or <code>dev-my_function_name</code></li>
-</ul></li>
-<li>Short “flat” templates names are possible thanks to fuzzy match like <code>add_flat_template(&quot;add&quot;)</code> for template <code>additionnal</code></li>
-</ul>
-</div>
-<div id="use-dontrun" class="section level2">
-<h2>Use <code>\dontrun{}</code></h2>
-<p>You can use <code>\dontrun{}</code> in an example chunk as follows:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; \dontrun{</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>an_example <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>an_example</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; }</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; OR</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; \dontrun{</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; an_example &lt;- 1 + 1</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; an_example</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; }</span></span></code></pre></div>
-</div>
-</div>
-<div id="add-a-new-flat_template.rmd-template-in-dev-directory" class="section level1">
-<h1>Add a new flat_template.Rmd template in “dev” directory</h1>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new project</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dummypackage <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="st">&quot;dummypackage&quot;</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(dummypackage)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Add an additional dev template</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">add_flat_template</span>(<span class="at">template =</span> <span class="st">&quot;add&quot;</span>, <span class="at">pkg =</span> dummypackage)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Created file .here in /tmp/Rtmpd2mC35/dummypackage12c4052de29bcf . Please start a new R session in the new project directory.</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;/tmp/Rtmpd2mC35/dummypackage12c4052de29bcf/dev/flat_additional.Rmd&quot;</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete dummy package</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(dummypackage, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-</div>
-<div id="fill-your-package-description" class="section level1">
-<h1>Fill your package Description</h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new project</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dummypackage <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="st">&quot;dummypackage&quot;</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(dummypackage)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fill_description</span>(</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pkg =</span> dummypackage,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fields =</span> <span class="fu">list</span>(</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Title =</span> <span class="st">&quot;Build A Package From Rmarkdown file&quot;</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Description =</span> <span class="fu">paste</span>(<span class="st">&quot;Use Rmarkdown First method to build your package.&quot;</span>, </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;Start your package with documentation.&quot;</span>, </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;Everything can be set from a Rmarkdown file in your project.&quot;</span>),</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Authors@R</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">person</span>(<span class="st">&quot;Sebastien&quot;</span>, <span class="st">&quot;Rochette&quot;</span>, <span class="at">email =</span> <span class="st">&quot;sebastien@thinkr.fr&quot;</span>, </span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">role =</span> <span class="fu">c</span>(<span class="st">&quot;aut&quot;</span>, <span class="st">&quot;cre&quot;</span>), <span class="at">comment =</span> <span class="fu">c</span>(<span class="at">ORCID =</span> <span class="st">&quot;0000-0002-1565-9313&quot;</span>)),</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">person</span>(<span class="at">given =</span> <span class="st">&quot;ThinkR&quot;</span>, <span class="at">role =</span> <span class="st">&quot;cph&quot;</span>)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ! Title was modified to &#39;Title Case&#39;.</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;/tmp/Rtmpd2mC35/dummypackage12c405124f25fb/DESCRIPTION&quot;</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete dummy package</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(dummypackage, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-</div>
-<div id="there-can-be-development-actions" class="section level1">
-<h1>There can be development actions</h1>
-<p>These are only included in the flat template file, their content will not be part of the package anywhere else.</p>
-<p>Name the following chunk with <code>{r development-1, eval=FALSE}</code></p>
-<pre><code># Run but keep eval=FALSE to avoid infinite loop
-
-usethis::use_mit_license(&quot;Sébastien Rochette&quot;)
-
-# Execute in the console directly
-
-fusen::inflate(flat_file = &quot;dev/dev_history.Rmd&quot;)</code></pre>
-</div>
-<div id="inflate-your-package-from-dev-rmd-template" class="section level1">
-<h1>Inflate your package from dev Rmd template</h1>
+<div id="inflate-your-package-from-the-flat-rmd-template" class="section level2">
+<h2>Inflate your package from the flat Rmd template</h2>
 <p>You’re one inflate from flat paper to box. Build your package from the flat Rmd template using the <code>inflate()</code> command below.</p>
 <p>After that, you can:</p>
 <ul>
@@ -463,29 +392,16 @@ fusen::inflate(flat_file = &quot;dev/dev_history.Rmd&quot;)</code></pre>
 <li>Verify your function is in <code>&quot;R/&quot;</code> directory</li>
 <li>Verify your test is in <code>&quot;tests/testthat/&quot;</code> directory</li>
 <li>Verify this Rmd appears in <code>&quot;vignettes/&quot;</code> directory</li>
-<li>Build your documentation using <code>pkgdown::build()</code> for vignette and examples checks</li>
+<li>Build your documentation using <code>usethis::use_pkgdown()</code> then <code>pkgdown::build()</code> for vignette and examples checks</li>
 </ul>
-<p><em>This code creates a package in a temporary directory. You will most probably be inside your project when ready to inflate, hence there will be no need to specify the directory of the package. This code is here as a reproducible example for you to test.</em></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new project</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dummypackage <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="st">&quot;dummypackage&quot;</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(dummypackage)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># {fusen} steps</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">fill_description</span>(<span class="at">pkg =</span> dummypackage, <span class="at">fields =</span> <span class="fu">list</span>(<span class="at">Title =</span> <span class="st">&quot;Dummy Package&quot;</span>))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>dev_file <span class="ot">&lt;-</span> <span class="fu">add_flat_template</span>(<span class="at">template =</span> <span class="st">&quot;teaching&quot;</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                              <span class="at">pkg =</span> dummypackage, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">inflate</span>(</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pkg =</span> dummypackage, </span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">flat_file =</span> dev_file, </span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">vignette_name =</span> <span class="st">&quot;Exploration of my Data&quot;</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">check =</span> <span class="cn">FALSE</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Explore directory of the package</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">browseURL</span>(dummypackage)</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete dummy package</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(dummypackage, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">inflate</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">flat_file =</span> <span class="st">&quot;dev/flat_teaching.Rmd&quot;</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">vignette_name =</span> <span class="st">&quot;Exploration of my Data&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">open_vignette =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">document =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">check =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</div>
 </div>
 <div id="create-a-new-package-from-command-line-directly-using-a-pre-defined-template" class="section level1">
 <h1>Create a new package from command line directly, using a pre-defined template</h1>
@@ -495,24 +411,59 @@ fusen::inflate(flat_file = &quot;dev/dev_history.Rmd&quot;)</code></pre>
 <li><em>This is for testing purposes</em></li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new project</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dummypackage <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">pattern =</span> <span class="st">&quot;dummy&quot;</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># {fusen} steps</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>dev_file <span class="ot">&lt;-</span> <span class="fu">create_fusen</span>(dummypackage, <span class="at">template =</span> <span class="st">&quot;teaching&quot;</span>, <span class="at">open =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Description</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">fill_description</span>(<span class="at">pkg =</span> dummypackage, <span class="at">fields =</span> <span class="fu">list</span>(<span class="at">Title =</span> <span class="st">&quot;Dummy Package&quot;</span>))</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># From inside the package</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">with_project</span>(dummypackage, {</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define License with use_*_license()</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  usethis<span class="sc">::</span><span class="fu">use_mit_license</span>(<span class="st">&quot;Sébastien Rochette&quot;</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># You may need to execute inflate() in the console directly</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  fusen<span class="sc">::</span><span class="fu">inflate</span>(<span class="at">pkg =</span> dummypackage, </span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">flat_file =</span> dev_file,</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">vignette_name =</span> <span class="st">&quot;Get started&quot;</span>)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new project</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dummypackage <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">pattern =</span> <span class="st">&quot;dummy&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># {fusen} steps</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>dev_file <span class="ot">&lt;-</span> <span class="fu">create_fusen</span>(dummypackage, <span class="at">template =</span> <span class="st">&quot;teaching&quot;</span>, <span class="at">open =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Description</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">fill_description</span>(<span class="at">pkg =</span> dummypackage, <span class="at">fields =</span> <span class="fu">list</span>(<span class="at">Title =</span> <span class="st">&quot;Dummy Package&quot;</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># From inside the package</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">with_project</span>(dummypackage, {</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define License with use_*_license()</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  usethis<span class="sc">::</span><span class="fu">use_mit_license</span>(<span class="st">&quot;Sébastien Rochette&quot;</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># You may need to execute inflate() in the console directly</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  fusen<span class="sc">::</span><span class="fu">inflate</span>(<span class="at">pkg =</span> dummypackage, </span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">flat_file =</span> dev_file,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">vignette_name =</span> <span class="st">&quot;Get started&quot;</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Explore directory of the package</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">browseURL</span>(dummypackage)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete dummy package</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(dummypackage, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="add-a-new-flat_template.rmd-template-in-dev-directory" class="section level1">
+<h1>Add a new “flat_template.Rmd” template in “dev/” directory</h1>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add an additional dev template</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">add_flat_template</span>(<span class="at">template =</span> <span class="st">&quot;add&quot;</span>, <span class="at">pkg =</span> dummypackage)</span></code></pre></div>
+</div>
+<div id="there-can-be-development-actions" class="section level1">
+<h1>There can be development actions</h1>
+<p>These are only included in the flat template file, their content will not be part of the package anywhere else.</p>
+<p>Name the following chunk with <code>{r development-something, eval=FALSE}</code></p>
+<pre><code>```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+
+usethis::use_mit_license(&quot;Sébastien Rochette&quot;)
+
+# Execute in the console directly
+
+fusen::inflate(flat_file = &quot;dev/dev_history.Rmd&quot;)
+```</code></pre>
+</div>
+<div id="limitations" class="section level1">
+<h1>Limitations</h1>
+<ul>
+<li>One title / one chunk is for one function</li>
+<li><code>examples</code> and <code>tests</code> chunks need to be placed after the associated <code>function</code> chunk</li>
+<li>You can add sub-functions in the <code>function</code> chunk to store them in the same R file, but they won’t have <code>@examples</code>. Only the first function of the chunk will be able to get examples.</li>
+<li>As for any Rmarkdown file, chunk names need to be unique. Thus, you better use <code>examples-myfunction</code>, <code>examples-myotherfunction</code>, …</li>
+<li><em>Do not forget to regularly clear your Workspace to avoid functions hidden by global environment</em></li>
+</ul>
 </div>
 
 

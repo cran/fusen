@@ -1,5 +1,5 @@
 ---
-title: "flat_template.Rmd empty"
+title: "flat_skeleton.Rmd empty"
 output: html_document
 editor_options: 
   chunk_output_type: console
@@ -16,24 +16,24 @@ pkgload::load_all(export_all = FALSE)
 
 # My function
 
-```{r function-my_fun}
-#' my_fun Title
+```{r function-skeleton}
+#' skeleton Title
 #'
 #' @return 1
 #' @export
 #'
 #' @examples
-my_fun <- function() {
+skeleton <- function() {
   1
 }
 ```
 
-```{r examples-my_fun}
-my_fun()
+```{r examples-skeleton}
+skeleton()
 ```
 
-```{r tests-my_fun}
-test_that("my_fun works", {
+```{r tests-skeleton}
+test_that("skeleton works", {
 
 })
 ```
@@ -42,6 +42,6 @@ test_that("my_fun works", {
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly
-fusen::inflate(flat_file = "dev/flat_template.Rmd", vignette_name = "Go further")
+fusen::inflate(flat_file = "dev/flat_skeleton.Rmd", vignette_name = "Go further")
 ```
 
