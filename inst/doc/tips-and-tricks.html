@@ -120,13 +120,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -339,34 +346,53 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <ul>
 <li>Chunk short names are possible:
 <ul>
-<li><code>function</code> can be named <code>fun-</code> or <code>fun_</code> or <code>fun-my_function_name</code></li>
-<li><code>example</code> can be named <code>ex-</code> or <code>ex_</code> or <code>ex-my_function_name</code></li>
-<li><code>tests</code> can be named <code>test-</code> or <code>test-my_function_name</code></li>
-<li><code>development</code> can be named <code>dev-</code> or <code>dev_</code> or <code>dev-my_function_name</code></li>
+<li><code>function</code> can be named <code>fun-</code> or
+<code>fun_</code> or <code>fun-my_function_name</code></li>
+<li><code>example</code> can be named <code>ex-</code> or
+<code>ex_</code> or <code>ex-my_function_name</code></li>
+<li><code>tests</code> can be named <code>test-</code> or
+<code>test-my_function_name</code></li>
+<li><code>development</code> can be named <code>dev-</code> or
+<code>dev_</code> or <code>dev-my_function_name</code></li>
 </ul></li>
-<li>There are wrappers around <code>add_flat_template()</code> for lazy developpers: <code>add_additional()</code>, <code>add_full()</code>, <code>add_minimal()</code></li>
+<li>There are wrappers around <code>add_flat_template()</code> for lazy
+developpers: <code>add_additional()</code>, <code>add_full()</code>,
+<code>add_minimal()</code></li>
 </ul>
 </div>
 <div id="can-i-knit-the-content-of-the-flat-template" class="section level1">
 <h1>Can I knit the content of the flat template ?</h1>
-<p>Yes. Although this is not the real goal, the flat template can be filled and run like any other Rmarkdown file.<br />
-However, you need to keep in mind that this will be transformed as a R package, which requires some specific attention.</p>
+<p>Yes. Although this is not the real goal, the flat template can be
+filled and run like any other Rmarkdown file.<br />
+However, you need to keep in mind that this will be transformed as a R
+package, which requires some specific attention.</p>
 <ul>
-<li>Use a <code>development</code> chunk at the beginning of your flat template to declare all packages that you will need to explore your code</li>
+<li>Use a <code>development</code> chunk at the beginning of your flat
+template to declare all packages that you will need to explore your
+code</li>
 </ul>
 <pre><code>```{r dev}
 library(glue)
 library(stringi)
 ```</code></pre>
-<p><em>Note that this will not be used anywhere in the package. A <code>development</code> chunk is only there for your code exploration, during development.</em></p>
+<p><em>Note that this will not be used anywhere in the package. A
+<code>development</code> chunk is only there for your code exploration,
+during development.</em></p>
 <ul>
-<li><p>Remember that in the package structure, examples and tests code will be run independently. Thus, <code>examples</code> and <code>tests</code> chunk need to have all code required to run independently.</p></li>
-<li><p>The <code>development</code> chunk that contains the <code>inflate()</code> call need to have <code>eval=FALSE</code> parameter to avoid side effects if you knit the flat file.</p></li>
+<li><p>Remember that in the package structure, examples and tests code
+will be run independently. Thus, <code>examples</code> and
+<code>tests</code> chunk need to have all code required to run
+independently.</p></li>
+<li><p>The <code>development</code> chunk that contains the
+<code>inflate()</code> call need to have <code>eval=FALSE</code>
+parameter to avoid side effects if you knit the flat file.</p></li>
 </ul>
 </div>
 <div id="how-to-declare-packages-with-library-for-the-future-vignette" class="section level1">
-<h1>How to declare packages with <code>library()</code> for the future vignette ?</h1>
-<p>If you use a classical chunk, without any specific name, it will be copied as is in the vignette.</p>
+<h1>How to declare packages with <code>library()</code> for the future
+vignette ?</h1>
+<p>If you use a classical chunk, without any specific name, it will be
+copied as is in the vignette.</p>
 <pre><code>```{r}
 library(glue)
 library(stringi)
@@ -374,10 +400,14 @@ library(stringi)
 </div>
 <div id="how-to-include-examples-that-cannot-be-run" class="section level1">
 <h1>How to include examples that cannot be run ?</h1>
-<p>I created a chunk <code>example</code> but I do not want the example to be run in the function example and I do not want it to be run in the vignette.</p>
+<p>I created a chunk <code>example</code> but I do not want the example
+to be run in the function example and I do not want it to be run in the
+vignette.</p>
 <ul>
-<li>Use <code>eval=FALSE</code> in the chunk options, so that it wont be run in the vignette</li>
-<li>Use <code>#&#39; \dontrun{}</code> syntax, with <code>#&#39;</code> before so that examples in the function example will not be run</li>
+<li>Use <code>eval=FALSE</code> in the chunk options, so that it wont be
+run in the vignette</li>
+<li>Use <code>#&#39; \dontrun{}</code> syntax, with <code>#&#39;</code> before
+so that examples in the function example will not be run</li>
 </ul>
 <pre><code>```{r function-myfunction}
 myfunction &lt;- function(x) {x}
@@ -398,9 +428,13 @@ myfunction(12)
 ```</code></pre>
 </div>
 <div id="document-your-internal-datasets-in-a-function-chunk-as-usual" class="section level1">
-<h1>Document your internal datasets in a <code>function</code> chunk as usual</h1>
-<p>To document datasets, pkgdoc, special R files, you can write them as is in the <code>function</code> chunk.<br />
-If {fusen} does not detect the keyword <code>function()</code> or <code>R6Class()</code> in the <code>function</code> chunk code, then the chunk is copied as is in a “R/” file.</p>
+<h1>Document your internal datasets in a <code>function</code> chunk as
+usual</h1>
+<p>To document datasets, pkgdoc, special R files, you can write them as
+is in the <code>function</code> chunk.<br />
+If {fusen} does not detect the keyword <code>function()</code> or
+<code>R6Class()</code> in the <code>function</code> chunk code, then the
+chunk is copied as is in a “R/” file.</p>
 <pre><code>```{r function-cars}
 #&#39; cars
 #&#39;
@@ -417,8 +451,10 @@ If {fusen} does not detect the keyword <code>function()</code> or <code>R6Class(
 </div>
 <div id="how-to-ignore-some-chunks" class="section level1">
 <h1>How to ignore some chunks ?</h1>
-<p>All chunks named <code>dev</code> or <code>development</code> will not be used in the package.<br />
-Use them for your exploration that you do not want to keep at the end of the process.<br />
+<p>All chunks named <code>dev</code> or <code>development</code> will
+not be used in the package.<br />
+Use them for your exploration that you do not want to keep at the end of
+the process.<br />
 This won’t affect your package.</p>
 <pre><code>```{r dev}
 # Some code exploration
@@ -426,14 +462,18 @@ This won’t affect your package.</p>
 </div>
 <div id="how-to-create-a-vignette-with-different-title-and-index-entry" class="section level1">
 <h1>How to create a vignette with different title and Index Entry?</h1>
-<p>You can use <code>inflate(vignette_name = c(&quot;Super title&quot; = &quot;01-Super Slug&quot;))</code> for vignette title different from vignette Entry</p>
+<p>You can use
+<code>inflate(vignette_name = c(&quot;Super title&quot; = &quot;01-Super Slug&quot;))</code>
+for vignette title different from vignette Entry</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inflate</span>(<span class="at">vignette_name =</span> <span class="fu">c</span>(<span class="st">&quot;Super title&quot;</span> <span class="ot">=</span> <span class="st">&quot;01-Super Vignette Index Entry&quot;</span>))</span></code></pre></div>
 </div>
 <div id="how-not-to-create-a-vignette" class="section level1">
 <h1>How not to create a vignette?</h1>
 <ul>
-<li>If I only build internal functions, I may not want to inflate the flat file as a vignette.</li>
-<li>The flat file is the developer’s documentation and that may be enough</li>
+<li>If I only build internal functions, I may not want to inflate the
+flat file as a vignette.</li>
+<li>The flat file is the developer’s documentation and that may be
+enough</li>
 </ul>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inflate</span>(<span class="at">vignette_name =</span> <span class="cn">NA</span>)</span></code></pre></div>
 </div>
@@ -441,17 +481,27 @@ This won’t affect your package.</p>
 <h1>How to get a pre-filled template for a specific function name ?</h1>
 <p>If it is the first function of the flat template:</p>
 <ul>
-<li>you can create the template with <code>add_flat_template(&quot;minimal&quot;, flat_name = &quot;my_function_name&quot;)</code>. In this case, the template will be pre-filled with your function name: chunk names, function calls.</li>
-<li>You can also use the RStudio Addin “Add {fusen} flat template” to create a new template in your “dev/” directory. You will be prompt for the template type and the function name</li>
+<li>you can create the template with
+<code>add_flat_template(&quot;minimal&quot;, flat_name = &quot;my_function_name&quot;)</code>.
+In this case, the template will be pre-filled with your function name:
+chunk names, function calls.</li>
+<li>You can also use the RStudio Addin “Add {fusen} flat template” to
+create a new template in your “dev/” directory. You will be prompt for
+the template type and the function name</li>
 </ul>
 <p>If this is the second function inside an existing template:</p>
 <ul>
-<li>Position your prompt where you want to add the new function and use the RStudio Addin: “Add {fusen} chunks”. You will be asked for the function name.</li>
-<li>The Addin uses <code>add_fusen_chunks(&quot;my_function_name&quot;)</code></li>
+<li>Position your prompt where you want to add the new function and use
+the RStudio Addin: “Add {fusen} chunks”. You will be asked for the
+function name.</li>
+<li>The Addin uses
+<code>add_fusen_chunks(&quot;my_function_name&quot;)</code></li>
 </ul>
 <div id="how-to-pre-fill-multiple-functions-in-one-template" class="section level2">
 <h2>How to pre-fill multiple functions in one template</h2>
-<p>This can be added in the “dev_history.Rmd”, and will replace a place holder in your flat rmd (<code>HERE</code> in this case) with proper fusen chunks for all your future functions to be.</p>
+<p>This can be added in the “dev_history.Rmd”, and will replace a place
+holder in your flat rmd (<code>HERE</code> in this case) with proper
+fusen chunks for all your future functions to be.</p>
 <ul>
 <li>Add a line with <code>HERE</code> in your flat file</li>
 </ul>
@@ -486,14 +536,17 @@ This won’t affect your package.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">inflate</span>(<span class="st">&quot;dev/flat_file1.Rmd&quot;</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">inflate</span>(<span class="st">&quot;dev/flat_file2.Rmd&quot;</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">inflate</span>(<span class="st">&quot;dev/flat_file3.Rmd&quot;</span>)</span></code></pre></div>
-<p>If the main “dev_history.Rmd” file does not exists, you can create it with <code>add_flat_template(&quot;dev_history&quot;)</code></p>
+<p>If the main “dev_history.Rmd” file does not exists, you can create it
+with <code>add_flat_template(&quot;dev_history&quot;)</code></p>
 </div>
 <div id="how-to-store-multiple-functions-in-a-unique-r-file" class="section level1">
 <h1>How to store multiple functions in a unique R file ?</h1>
-<p>There are multiple ways of doing it. Choose one of: use the section title structure, use roxygen tags or use chunk parameter.</p>
+<p>There are multiple ways of doing it. Choose one of: use the section
+title structure, use roxygen tags or use chunk parameter.</p>
 <div id="all-functions-under-one-title-section" class="section level2">
 <h2>All functions under one title section</h2>
-<p>Use the 3-set of chunks (<code>fun</code>, <code>example</code>, <code>test</code>) twice, under the same title section of the Rmd</p>
+<p>Use the 3-set of chunks (<code>fun</code>, <code>example</code>,
+<code>test</code>) twice, under the same title section of the Rmd</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># One title for both groups of chunk</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>The code and tests for the first function</span>
@@ -564,8 +617,11 @@ This won’t affect your package.</p>
 </div>
 <div id="use-same-filename-in-function-roxygen" class="section level2">
 <h2>Use same <code>@filename</code> in function roxygen</h2>
-<p><code>@filename</code> is recognized only by {fusen} as a proper roxygen tag to merge multiple functions in the same “R/” and “tests/” files.<br />
-This code line is removed in the resulting “R/” files to avoid any interference with Roxygenize.</p>
+<p><code>@filename</code> is recognized only by {fusen} as a proper
+roxygen tag to merge multiple functions in the same “R/” and “tests/”
+files.<br />
+This code line is removed in the resulting “R/” files to avoid any
+interference with Roxygenize.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode md"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Title 1 for function 1</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="in">```{r function-fun_filename1}</span></span>
@@ -637,15 +693,51 @@ This code line is removed in the resulting “R/” files to avoid any interfere
 </div>
 </div>
 <div id="how-to-read-dataset-that-i-usually-put-in-teststestthat-for-my-unit-tests" class="section level1">
-<h1>How to read dataset that I usually put in “tests/testthat/” for my unit tests?</h1>
-<p>You will need to write two ways of reading the data: - One to use on-demand in the flat file, which needs to be commented - One to be use in the future test file</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The code that you will run manually in the flat file if needed during development</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; This needs to be commented</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># my_file &lt;- read.csv(&quot;tests/testthat/my_file.csv&quot;)</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># The code that will be used in the inflated test file</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># This needs to be uncommented</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>my_file <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;my_file.csv&quot;</span>)</span></code></pre></div>
+<h1>How to read dataset that I usually put in “tests/testthat/” for my
+unit tests?</h1>
+<p>During checks, the tests are run relative to the “tests/testthat/”
+directory.<br />
+You will need to anticipate the two ways of reading the data:</p>
+<ul>
+<li>One from within the flat file, which needs to be modified</li>
+<li>One to be use in the future test file</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The path relative to the &quot;tests/testthat&quot; directory for tests</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>the_file <span class="ot">&lt;-</span> <span class="st">&quot;my_file.csv&quot;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(the_file)) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The path to use during dev in the flat file</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  the_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">&quot;tests&quot;</span>, <span class="st">&quot;testthat&quot;</span>, the_file)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(the_file)) {<span class="fu">stop</span>(the_file, <span class="st">&quot; does not exist&quot;</span>)}</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>my_file <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(the_file)</span></code></pre></div>
+</div>
+<div id="can-i-load-all-functions-of-th-current-flat-file-during-development-without-having-to-inflate" class="section level1">
+<h1>Can I load all functions of th current flat file during development
+without having to <code>inflate()</code>?</h1>
+<p>Yes. You can run <code>function</code> chunks only in the currently
+opened flat file with <code>load_flat_functions()</code>.<br />
+With long flat file currently in developement, and before
+<code>inflate()</code>, it is sometimes difficult to run all chunks
+needed after multiple modifications. This can also be useful when you
+start again your development the day after.</p>
+<p><code>load_flat_functions()</code> is like a <code>load_all()</code>
+for a flat file, although it does not account for dependencies.</p>
+<p>In the console, run:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">load_flat_functions</span>()</span></code></pre></div>
+<p>You can also run <code>function</code> chunks from a specific flat
+file with:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">load_flat_functions</span>(<span class="at">flat_file =</span> <span class="st">&quot;dev/flat_full.Rmd&quot;</span>)</span></code></pre></div>
+</div>
+<div id="can-i-inflate-a-quarto-qmd-file" class="section level1">
+<h1>Can I inflate a Quarto qmd file?</h1>
+<p>Yes you can. As long as what you include in your qmd flat file is
+good for a R package vignette, you can use the qmd format.<br />
+This will not really change the output of anything as the flat file is
+not meant to be rendered.<br />
+But why not!?</p>
+<p>So, you can add a flat file a change it to “.qmd” if it suits
+you.</p>
 </div>
 
 

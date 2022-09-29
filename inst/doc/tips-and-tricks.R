@@ -11,11 +11,13 @@ knitr::opts_chunk$set(
 #  inflate(vignette_name = NA)
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  # The code that you will run manually in the flat file if needed during development
-#  # > This needs to be commented
-#  # my_file <- read.csv("tests/testthat/my_file.csv")
+#  # The path relative to the "tests/testthat" directory for tests
+#  the_file <- "my_file.csv"
+#  if (!file.exists(the_file)) {
+#    # The path to use during dev in the flat file
+#    the_file <- file.path("tests", "testthat", the_file)
+#    if (!file.exists(the_file)) {stop(the_file, " does not exist")}
+#  }
 #  
-#  # The code that will be used in the inflated test file
-#  # This needs to be uncommented
-#  my_file <- read.csv("my_file.csv")
+#  my_file <- read.csv(the_file)
 

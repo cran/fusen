@@ -4,9 +4,9 @@
 \name{fusen-package}
 \alias{fusen}
 \alias{fusen-package}
-\title{fusen: Build a Package from Rmarkdown File}
+\title{fusen: Build a Package from Rmarkdown Files}
 \description{
-\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
 Use Rmarkdown First method to build your package. Start your package with documentation, functions, examples and tests in the same unique file. Everything can be set from the Rmarkdown template file provided in your project, then inflated as a package. Inflating the template copies the relevant chunks and sections in the appropriate files required for package development.
 }

@@ -351,17 +351,47 @@ Add it in the `function` chunk only
 
 # How to read dataset that I usually put in "tests/testthat/" for my unit tests?
 
-You will need to write two ways of reading the data: 
-- One to use on-demand in the flat file, which needs to be commented
+During checks, the tests are run relative to the "tests/testthat/" directory.  
+You will need to anticipate the two ways of reading the data:
+
+- One from within the flat file, which needs to be modified
 - One to be use in the future test file
 
 ```{r, eval=FALSE}
-# The code that you will run manually in the flat file if needed during development
-# > This needs to be commented
-# my_file <- read.csv("tests/testthat/my_file.csv")
+# The path relative to the "tests/testthat" directory for tests
+the_file <- "my_file.csv"
+if (!file.exists(the_file)) {
+  # The path to use during dev in the flat file
+  the_file <- file.path("tests", "testthat", the_file)
+  if (!file.exists(the_file)) {stop(the_file, " does not exist")}
+}
 
-# The code that will be used in the inflated test file
-# This needs to be uncommented
-my_file <- read.csv("my_file.csv")
+my_file <- read.csv(the_file)
 ```
 
+# Can I load all functions of th current flat file during development without having to `inflate()`?
+
+Yes. You can run `function` chunks only in the currently opened flat file with `load_flat_functions()`.  
+With long flat file currently in developement, and before `inflate()`, it is sometimes difficult to run all chunks needed after multiple modifications. This can also be useful when you start again your development the day after.
+
+`load_flat_functions()` is like a `load_all()` for a flat file, although it does not account for dependencies.
+
+In the console, run:  
+
+```r
+fusen::load_flat_functions()
+```
+
+You can also run `function` chunks from a specific flat file with:
+
+```r
+fusen::load_flat_functions(flat_file = "dev/flat_full.Rmd")
+```
+
+# Can I inflate a Quarto qmd file?
+
+Yes you can. As long as what you include in your qmd flat file is good for a R package vignette, you can use the qmd format.  
+This will not really change the output of anything as the flat file is not meant to be rendered.  
+But why not!?
+
+So, you can add a flat file a change it to ".qmd" if it suits you.  
