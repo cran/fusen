@@ -1,7 +1,7 @@
-a0de8790f9eb695613bb1780fd7916e5 *DESCRIPTION
+f0e9af1202dc1dbe10b5c602e07f2962 *DESCRIPTION
 05b244661505b5129abd2d115a783f4c *LICENSE
 5dca5cfe7e688ec7b715642794ef536c *NAMESPACE
-96c266cb41c763abf8650dc3ec368db2 *NEWS.md
+2a59bd268df6bb066eb3371e50540df2 *NEWS.md
 9d42bfb003ba6df678a81388d4c1380e *R/add_dev_history.R
 373ce0b799d9a71f52e9c3ca092750ed *R/add_flat_template.R
 cebaa34f200e4802e87f81e89210e20c *R/addins.R
@@ -11,7 +11,7 @@ b9ad6e660a9aafce9c9ef69c4e72615a *R/create_fusen_rsproject.R
 e0ef681901465d24f47f9139cb2c086a *R/fusen-package.R
 1a62c38f38a889466d52b7fb9ea795c7 *R/globals.R
 19483a7c77c8ee29d4b75aa2d1f2243d *R/inflate-utils.R
-ced722f610df44b885ee7a01502e2bea *R/inflate.R
+4a55eb2858a0d95ce5f2d759fa783479 *R/inflate.R
 f7e54164eb2c6aad686c35375adc4b38 *R/load_flat_functions.R
 b56ff2b193ecba52f9ec7f3b10cca008 *R/utils-pipe.R
 253e9a8bbaee6b01361636af182e378e *README.md
@@ -21,13 +21,13 @@ e2d3031538c98609381ce4eae7cbe162 *inst/dev-template-additional.Rmd
 bb1a06e492971779c8d769d7a7a33459 *inst/dev-template-teaching.Rmd
 1c683b85d9b0e1af2b9ad0148be1cd9e *inst/doc/How-to-use-fusen.R
 e9aa4c480c0a6a0494f9c3bd9f0e8815 *inst/doc/How-to-use-fusen.Rmd
-d9c5650693f858eb6b557553330cc9a3 *inst/doc/How-to-use-fusen.html
+8b28ac48ebeb97c18d7decf56d5fd352 *inst/doc/How-to-use-fusen.html
 36a2d6b147a470311f7130f344939e0d *inst/doc/Maintain-packages-with-fusen.R
 5e6c97a06e585dfa3eb2bda2356bce04 *inst/doc/Maintain-packages-with-fusen.Rmd
-c2cee700ed3e721754d552acfb39c6a8 *inst/doc/Maintain-packages-with-fusen.html
+33bdd66f905f681bb73450a0ddfbf83c *inst/doc/Maintain-packages-with-fusen.html
 405d9a3c7a566d3d10dd7968a0dacfa3 *inst/doc/tips-and-tricks.R
 62dfc9233c64cc6fb34a9935fa046661 *inst/doc/tips-and-tricks.Rmd
-6bd353cb41fca894c51a06edd569957a *inst/doc/tips-and-tricks.html
+4a1ed1605ae5677761fa5da8f0297798 *inst/doc/tips-and-tricks.html
 ae6fba61b01cab38f08444d92b1b9a92 *inst/flat-template-additional.Rmd
 fbfdce453adb71a8144d273f9b02687e *inst/flat-template-full.Rmd
 6ad5057b814117cc1cc5e8a1d7713a91 *inst/flat-template-minimal.Rmd
@@ -77,9 +77,9 @@ d5243da767b51b93d6060685e2caa6da *tests/testthat.R
 2db3abf8ce40647aa09aeec5f464395f *tests/testthat/test-create_fusen_rsproject.R
 03dd7ef17ba3b1c9335db7a9f19e58a3 *tests/testthat/test-fill_description.R
 e74221dbc64d49fba2491e8088eb29b9 *tests/testthat/test-inflate-part1.R
-95e8d151b8b42bff690aead167b627be *tests/testthat/test-inflate-part2.R
+c8d6b57063f378bb853451315b264fa2 *tests/testthat/test-inflate-part2.R
 732f3246636dc41681844006692ee980 *tests/testthat/test-inflate_qmd.R
-3438c3c2c587e06149e610917fb0e0cc *tests/testthat/test-inflate_utils.R
+dcc970e59f2e3b6ba21692b364fb827c *tests/testthat/test-inflate_utils.R
 7365e45ab599cc777517c7905273bb37 *tests/testthat/test-load_flat_functions.R
 dd1c07df488f5a844ad01f3b1e004295 *tests/testthat/test-skeleton.R
 e9aa4c480c0a6a0494f9c3bd9f0e8815 *vignettes/How-to-use-fusen.Rmd
