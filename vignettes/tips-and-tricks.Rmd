@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
   - `tests` can be named `test-` or `test-my_function_name`
   - `development` can be named `dev-` or `dev_` or `dev-my_function_name`
 
-- There are wrappers around `add_flat_template()` for lazy developpers: `add_additional()`, `add_full()`, `add_minimal()`
+- There are wrappers around `add_flat_template()` for lazy developers: `add_additional()`, `add_full()`, `add_minimal()`
 
 
 # Can I knit the content of the flat template ?
@@ -176,15 +176,14 @@ writeLines(flat_rmd, path_flat_rmd)
 
 # How to Inflate multiple flat files ?
 
-- Add an entry in your main "dev_history.Rmd" file
+- Use `inflate_all()`
 
-```r
-fusen::inflate("dev/flat_file1.Rmd")
-fusen::inflate("dev/flat_file2.Rmd")
-fusen::inflate("dev/flat_file3.Rmd")
+Read the dedicated vignette "inflate-all-your-flat-files"
+
+```
+vignette("inflate-all-your-flat-files", package = "fusen")
 ```
 
-If the main "dev_history.Rmd" file does not exists, you can create it with `add_flat_template("dev_history")`
 
 # How to store multiple functions in a unique R file ?
 
@@ -363,16 +362,18 @@ the_file <- "my_file.csv"
 if (!file.exists(the_file)) {
   # The path to use during dev in the flat file
   the_file <- file.path("tests", "testthat", the_file)
-  if (!file.exists(the_file)) {stop(the_file, " does not exist")}
+  if (!file.exists(the_file)) {
+    stop(the_file, " does not exist")
+  }
 }
 
 my_file <- read.csv(the_file)
 ```
 
-# Can I load all functions of th current flat file during development without having to `inflate()`?
+# Can I load all functions of the current flat file during development without having to `inflate()`?
 
-Yes. You can run `function` chunks only in the currently opened flat file with `load_flat_functions()`.  
-With long flat file currently in developement, and before `inflate()`, it is sometimes difficult to run all chunks needed after multiple modifications. This can also be useful when you start again your development the day after.
+Yes. You can run and load `function` chunks only in the currently opened flat file with `load_flat_functions()`.  
+With long flat file currently in development, and before `inflate()`, it is sometimes difficult to run all chunks needed after multiple modifications. This can also be useful when you start again your development the day after.
 
 `load_flat_functions()` is like a `load_all()` for a flat file, although it does not account for dependencies.
 
@@ -382,7 +383,7 @@ In the console, run:
 fusen::load_flat_functions()
 ```
 
-You can also run `function` chunks from a specific flat file with:
+You can also run `function` chunks of a specific flat file with:
 
 ```r
 fusen::load_flat_functions(flat_file = "dev/flat_full.Rmd")
@@ -392,6 +393,20 @@ fusen::load_flat_functions(flat_file = "dev/flat_full.Rmd")
 
 Yes you can. As long as what you include in your qmd flat file is good for a R package vignette, you can use the qmd format.  
 This will not really change the output of anything as the flat file is not meant to be rendered.  
+The vignette created from this flat file will still be a Rmd file.
 But why not!?
 
-So, you can add a flat file a change it to ".qmd" if it suits you.  
+Hence, you can add a flat file and change its extension to ".qmd" if you like.  
+
+# Can I use {fusen} with {golem}?
+
+Of course ! That is even recommended as it allows to properly separate the business logic (in "dev/" directory) from the UI (in the modules of the "R/" directory).  
+Start by creating a {golem} project. Then you can start adding your flat files.  
+We recommend to create modules with names in relation to flat files, so that you can better navigate in your project.  
+```
+golem::create_golem('my.golem.app')
+fusen::add_minimal_flat(flat_name = "page1")
+golem::add_module(name = "page1")
+```
+
+Although default {golem} "dev/" files already contain the main actions to maintain your package, you can still add the "0-dev_history.Rmd" file recommended with {fusen} using `add_dev_history()`. Note that some sections will be redundant with the {golem} dev files.

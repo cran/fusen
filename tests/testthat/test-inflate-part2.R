@@ -64,7 +64,16 @@ for (pkgname in c("full", "teaching", "minimal")) {
     fill_description(pkg = path_foosen, fields = list(Title = "Dummy Package"))
     usethis::use_gpl_license()
 
-    test_that(paste("Check returns OK for template", pkgname), {
+    test_that("description is good", {
+      expect_true(file.exists(file.path(path_foosen, "DESCRIPTION")))
+      lines <- readLines(file.path(path_foosen, "DESCRIPTION"))
+      expect_true(lines[1] == paste0("Package: ", basename(path_foosen)))
+      expect_false(any(grepl("Jack", lines)))
+      expect_false(any(grepl("Sébastien", lines)))
+    })
+
+    ok_template <- paste("Check returns OK for template", pkgname)
+    test_that(ok_template, {
       # Do not check inside check if on CRAN
       # skip_on_os(os = c("windows", "solaris"))
       skip_on_cran()
@@ -321,20 +330,27 @@ usethis::with_project(dummypackage, {
 
     # R files with chunk content - Name after title as function name is NA
     expect_equal(
-      list.files(file.path(dummypackage, "R")),
-      c("my-data-doc.R", "my-pkg-doc.R", "onload.R")
+      sort(list.files(file.path(dummypackage, "R"))),
+      sort(c("internal-variables.R", "my-data-doc.R", "my-pkg-doc.R", "onload.R"))
     )
     pkgdoc <- file.path(dummypackage, "R", "my-pkg-doc.R")
     expect_true(file.exists(pkgdoc))
     pkgdoc_lines <- readLines(pkgdoc)
     expect_equal(length(pkgdoc_lines), 10)
     expect_equal(pkgdoc_lines[4], "\"_PACKAGE\"")
+    expect_true(file.exists(
+      file.path(
+        dummypackage, "man",
+        paste0(basename(dummypackage), "-package.Rd")
+      )
+    ))
 
     datadoc <- file.path(dummypackage, "R", "my-data-doc.R")
     expect_true(file.exists(datadoc))
     datadoc_lines <- readLines(datadoc)
     expect_equal(length(datadoc_lines), 13)
     expect_equal(datadoc_lines[13], "\"cars\"")
+    expect_true(file.exists(file.path(dummypackage, "man", "cars.Rd")))
 
     myonloadfile <- file.path(dummypackage, "R", "onload.R")
     expect_true(file.exists(myonloadfile))
@@ -345,6 +361,15 @@ usethis::with_project(dummypackage, {
       "        the_message()",
       "}"
     )))
+    expect_false(file.exists(
+      file.path(dummypackage, "man", "onload.Rd")
+    ))
+
+    datavar <- file.path(dummypackage, "R", "internal-variables.R")
+    expect_true(file.exists(datavar))
+    datavar_lines <- readLines(datavar)
+    expect_equal(length(datavar_lines), 3)
+    expect_equal(datavar_lines[3], "colors <- c(\"#FFFFFF\", \"#F0F0F0\")")
 
     # No tests
     expect_false(file.exists(file.path(dummypackage, "tests")))
@@ -468,25 +493,29 @@ flat_file <- dev_file[grepl("flat_", dev_file)]
 
 test_that("rmd and name are deprecated works", {
   usethis::with_project(dummypackage, {
-    expect_warning(
-      inflate(
-        pkg = ".",
-        # flat_file = flat_file,
-        rmd = flat_file,
-        vignette_name = "Get started",
-        check = FALSE, document = TRUE,
-        overwrite = TRUE, open_vignette = FALSE
+    expect_error(
+      suppressMessages(
+        inflate(
+          pkg = ".",
+          # flat_file = flat_file,
+          rmd = flat_file,
+          vignette_name = "Get started",
+          check = FALSE, document = TRUE,
+          overwrite = TRUE, open_vignette = FALSE
+        )
       ),
       regexp = "The `rmd` argument"
     )
-    expect_warning(
-      inflate(
-        pkg = ".",
-        flat_file = flat_file,
-        # vignette_name = "Get started",
-        name = "Get started",
-        check = FALSE, document = TRUE,
-        overwrite = TRUE, open_vignette = FALSE
+    expect_error(
+      suppressMessages(
+        inflate(
+          pkg = ".",
+          flat_file = flat_file,
+          # vignette_name = "Get started",
+          name = "Get started",
+          check = FALSE, document = TRUE,
+          overwrite = TRUE, open_vignette = FALSE
+        )
       ),
       regexp = "The `name` argument"
     )
@@ -987,3 +1016,235 @@ usethis::with_project(dummypackage, {
 })
 
 unlink(dummypackage, recursive = TRUE)
+
+# Test "function ()" in documentation not read as a function ----
+
+# Create a new project
+dummypackage <- tempfile("inflate.fun.in.roxygen")
+dir.create(dummypackage)
+
+# {fusen} steps
+fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package"))
+dev_file <- suppressMessages(add_flat_template(pkg = dummypackage, overwrite = TRUE, open = FALSE))
+flat_file <- dev_file[grepl("flat_", dev_file)]
+
+usethis::with_project(dummypackage, {
+  # More complicated example for tests
+  testfile <- "tests-templates/dev-template-word-function-in-doc.Rmd"
+  file.copy(
+    system.file(testfile, package = "fusen"),
+    flat_file,
+    overwrite = TRUE
+  )
+  suppressMessages(
+    inflate(
+      pkg = dummypackage, flat_file = flat_file,
+      vignette_name = NA, check = FALSE
+    )
+  )
+
+  test_that("inflate() worked correctly", {
+    # Check only the first function is saved in a .R
+    the_codes <- file.path(dummypackage, "R")
+    expect_equal(list.files(the_codes), "my_function.R") # not c("add_one.R", "my_function.R")
+    # Check that .R contains example
+    code <- readLines(file.path(dummypackage, "R", "my_function.R"))
+    expect_true(any(grepl("^#'\\s*my_function\\(x", code)))
+  })
+})
+
+# Clean
+unlink(dummypackage, recursive = TRUE)
+
+# Two examples for one function ----
+dummypackage <- tempfile("twoexamples")
+dir.create(dummypackage)
+dev_file <- add_flat_template(pkg = dummypackage, overwrite = TRUE, open = FALSE)
+flat_file <- dev_file[grepl("flat_", dev_file)]
+fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package"))
+
+usethis::with_project(dummypackage, {
+  file.copy(
+    system.file("tests-templates/dev-template-one-func-two-examples.Rmd", package = "fusen"),
+    flat_file,
+    overwrite = TRUE
+  )
+
+  usethis::use_mit_license("Statnmap")
+
+  test_that("Deal with 2 examples for one function", {
+    # No error
+    expect_error(
+      suppressMessages(
+        inflate(
+          pkg = dummypackage, flat_file = flat_file,
+          check = FALSE, open_vignette = FALSE
+        )
+      ),
+      regexp = NA
+    )
+  })
+
+  lines <- readLines(file.path(dummypackage, "R", "my_twoexamples.R"))
+
+  expect_equal(
+    lines,
+    c(
+      "# WARNING - Generated by {fusen} from dev/flat_full.Rmd: do not edit by hand",
+      "",
+      "#' my_twoexamples",
+      "#' @param x x",
+      "#' @export",
+      "#' @examples",
+      "#' \\dontrun{",
+      "#' my_twoexamples(10)",
+      "#' }", "#'",
+      "#' my_twoexamples(20)",
+      "my_twoexamples <- function(x) {",
+      "  x + 10",
+      "}"
+    )
+  )
+})
+
+# Clean
+unlink(dummypackage, recursive = TRUE)
+
+
+# Test function name recognized with linebreaks between it and the function ----
+# Create a new project
+dummypackage <- tempfile("inflate.fun.in.roxygen")
+dir.create(dummypackage)
+
+# {fusen} steps
+fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package"))
+dev_file <- suppressMessages(add_flat_template(pkg = dummypackage, overwrite = TRUE, open = FALSE))
+flat_file <- dev_file[grepl("flat_", dev_file)]
+
+usethis::with_project(dummypackage, {
+  # More complicated example for tests
+  testfile <- "tests-templates/dev-template-function-name-linebreak.Rmd"
+  file.copy(
+    system.file(testfile, package = "fusen"),
+    flat_file,
+    overwrite = TRUE
+  )
+
+  suppressMessages(
+    inflate(
+      pkg = dummypackage, flat_file = flat_file,
+      vignette_name = NA, check = FALSE
+    )
+  )
+
+  test_that("inflate() worked correctly with linebreaks", {
+    # Check that the functions are saved in a .R with the right name
+    the_codes <- file.path(dummypackage, "R")
+    expect_equal(sort(list.files(the_codes)), sort(paste0(c("real_name"), 1:11, ".R")))
+
+    # Example is included in .R in the right place for the first 3 functions
+    code_fct1 <- readLines(file.path(dummypackage, "R", "real_name1.R"))
+    expect_true(all(code_fct1[5:8] == c(
+      "#' @examples", "#' real_name1(1)", "real_name1 <-", "  function(x){"
+    )))
+    code_fct2 <- readLines(file.path(dummypackage, "R", "real_name2.R"))
+    expect_true(all(code_fct2[5:10] == c(
+      "#' @examples", "#' real_name2(2)", "", "# a comment", "real_name2 <- ", "  function(x){"
+    )))
+    code_fct3 <- readLines(file.path(dummypackage, "R", "real_name3.R"))
+    expect_true(all(code_fct3[5:8] == c(
+      "#' @examples", "#' real_name3(3)", "real_name3 <- # a comment", "  function(x){"
+    )))
+    code_fct10 <- readLines(file.path(dummypackage, "R", "real_name10.R"))
+    expect_true(all(code_fct10[10:12] == c(
+      "#' @examples", "#' real_name10(2)", "real_name10 <- function(x){"
+    )))
+    code_fct11 <- readLines(file.path(dummypackage, "R", "real_name11.R"))
+    expect_true(all(code_fct11[5:8] == c(
+      "#' @examples", "#' real_name11(1)", "real_name11 <-", "  function(x) {"
+    )))
+
+
+    # Example is included in .rd
+    the_docs <- file.path(dummypackage, "man")
+    expect_equal(
+      sort(list.files(the_docs)),
+      sort(c("real_name1.Rd", "real_name10.Rd", "real_name11.Rd"))
+    )
+
+    # Number of tests
+    expect_equal(
+      sort(list.files(file.path(dummypackage, "tests", "testthat"))),
+      sort(c(
+        "test-real_name1.R", "test-real_name11.R",
+        "test-real_name2.R", "test-real_name3.R"
+      ))
+    )
+  })
+})
+
+# Clean
+unlink(dummypackage, recursive = TRUE)
+
+# Test special character in directory names ----
+dummypackage.special <- tempfile("dummypackage_@ (special)")
+dir.create(dummypackage.special)
+
+# {fusen} steps
+test_that("fill_description renames package name if not clean", {
+  expect_warning(
+    desc_file <- fill_description(pkg = dummypackage.special, fields = list(Title = "Dummy Package")),
+    "Your package was renamed: `dummypackage[.]special[.]"
+  )
+
+  desc_file_lines <- readLines(desc_file)
+  expect_true(
+    grepl(
+      "dummypackage[.]special[.]",
+      desc_file_lines[grepl("Package", desc_file_lines)][1]
+    )
+  )
+  expect_false(
+    grepl(
+      "dummypackage_@ \\(special\\)",
+      desc_file_lines[grepl("Package", desc_file_lines)][1]
+    )
+  )
+})
+
+dev_file <- suppressMessages(add_flat_template(pkg = dummypackage.special, overwrite = TRUE, open = FALSE))
+flat_file <- dev_file[grepl("flat_", dev_file)]
+
+usethis::with_project(dummypackage.special, {
+  suppressMessages(
+    inflate(
+      pkg = dummypackage.special, flat_file = flat_file,
+      vignette_name = "Get started", check = FALSE,
+      open_vignette = FALSE
+    )
+  )
+
+  test_that("inflate with special character in directory worked", {
+    # config files
+    config_file <- file.path(dummypackage.special, "dev", "config_fusen.yaml")
+    config_content <- read_yaml(config_file)
+    expect_equal(
+      sort(config_content[["flat_full.Rmd"]][["R"]]),
+      expected = sort(c("R/my_median.R", "R/my_other_median.R"))
+    )
+    expect_equal(
+      sort(config_content[["flat_full.Rmd"]][["tests"]]),
+      expected = sort(c(
+        "tests/testthat/test-my_median.R",
+        "tests/testthat/test-my_other_median.R"
+      ))
+    )
+    expect_equal(
+      sort(config_content[["flat_full.Rmd"]][["vignettes"]]),
+      expected = sort(c("vignettes/get-started.Rmd"))
+    )
+  })
+})
+
+# Clean
+unlink(dummypackage.special, recursive = TRUE)

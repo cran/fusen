@@ -40,7 +40,7 @@ library(fusen)
 
 ## Fill your package Description
 
-Fonction `fill_description()` requires the description of your package: What does it do? Who are the developers?  
+Function `fill_description()` requires the description of your package: What does it do? Who are the developers?  
 This will fill the DESCRIPTION file in the proper way. 
 
 ```{r example-description, eval=FALSE}
@@ -48,13 +48,14 @@ fill_description(
   pkg = dummypackage,
   fields = list(
     Title = "Build A Package From Rmarkdown file",
-    Description = paste("Use Rmarkdown First method to build your package.", 
-                        "Start your package with documentation.", 
-                        "Everything can be set from a Rmarkdown file in your project."),
+    Description = paste(
+      "Use Rmarkdown First method to build your package.",
+      "Start your package with documentation.",
+      "Everything can be set from a Rmarkdown file in your project."
+    ),
     `Authors@R` = c(
-      person("Sebastien", "Rochette", email = "sebastien@thinkr.fr", 
-             role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1565-9313")),
-      person(given = "ThinkR", role = "cph")
+      person("John", "Doe", email = "john@email.me", role = c("aut", "cre"), comment = c(ORCID = "0000-0000-0000-0000")),
+      person(given = "Company", role = "cph")
     )
   )
 )
@@ -75,7 +76,7 @@ After that, you can:
 
 ```{r example-inflate, eval=FALSE}
 fusen::inflate(
-  flat_file = "dev/flat_teaching.Rmd", 
+  flat_file = "dev/flat_teaching.Rmd",
   vignette_name = "Exploration of my Data",
   open_vignette = TRUE,
   document = TRUE,
@@ -100,12 +101,14 @@ fusen::fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package
 # From inside the package
 usethis::with_project(dummypackage, {
   # Define License with use_*_license()
-  usethis::use_mit_license("Sébastien Rochette")
-  
+  usethis::use_mit_license("John Doe")
+
   # You may need to execute inflate() in the console directly
-  fusen::inflate(pkg = dummypackage, 
-                 flat_file = dev_file,
-                 vignette_name = "Get started")
+  fusen::inflate(
+    pkg = dummypackage,
+    flat_file = dev_file,
+    vignette_name = "Get started"
+  )
 })
 
 # Explore directory of the package
@@ -120,6 +123,8 @@ unlink(dummypackage, recursive = TRUE)
 ```{r example, eval=FALSE}
 # Add an additional dev template
 add_flat_template(template = "add", pkg = dummypackage)
+# or directly
+add_additional(pkg = dummypackage)
 ```
 
 # There can be development actions
@@ -132,7 +137,7 @@ Name the following chunk with `{r development-something, eval=FALSE}`
 ```{r development-inflate, eval=FALSE}`r ''`
 # Run but keep eval=FALSE to avoid infinite loop
 
-usethis::use_mit_license("Sébastien Rochette")
+usethis::use_mit_license("John Doe")
 
 # Execute in the console directly
 

@@ -33,6 +33,8 @@ To add a new family of functions, create a new flat Rmd template
 
 ```{r, eval=FALSE}
 add_flat_template(template = "add")
+# or directly
+add_additional()
 ```
 
 
@@ -91,10 +93,10 @@ The "flat_template.Rmd" template only modifies files related to functions presen
 - Install {fusen} : `install.packages("fusen")`
 - Open a project for **one of your already existing package**
   + Commit your previous state if you are afraid of {fusen}
-  + If you are not sure enough to do it on an existing package, then follow the guide in ["How to use fusen"](https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html)
+  + If you are not confident enough to try it on an existing package, then create a new package while following the guide in ["How to use fusen"](https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html)
 - Run in the Console : `fusen::add_flat_template("add")`
   + A Rmd file appears in "dev/flat_additional.Rmd". Open it.
-- Add a new function in the `function` chunk. For instance:  
+- Write a new function in the `function` chunk. For instance:  
 ```{r, eval=FALSE}
 #' My median
 #'
@@ -107,11 +109,14 @@ The "flat_template.Rmd" template only modifies files related to functions presen
 #'
 #' @examples
 my_median <- function(x, na.rm = TRUE) {
-  if (!is.numeric(x)) {stop("x should be numeric")}
+  if (!is.numeric(x)) {
+    stop("x should be numeric")
+  }
   stats::median(x, na.rm = na.rm)
 }
 ```
-- Add a corresponding example in the `example` chunk. For instance:  
+- Add a corresponding example in the `example` chunk.
+  + If you're looking for an equivalent of `load_all()` but for all functions inside this flat file before inflating, you can use `fusen::load_flat_functions()`
 ```{r, eval=FALSE}
 my_median(1:12)
 ```
@@ -122,9 +127,10 @@ test_that("my_median works properly and show error if needed", {
   expect_error(my_median("text"))
 })
 ```
-- Run command of the last chunk: `fusen::inflate(flat_file = "dev/flat_additional.Rmd")`
+- Run the command of the last chunk of the flat file: `fusen::inflate(flat_file = "dev/flat_additional.Rmd")`
   + This will run {attachment} behind the scene and may modify the list of dependencies in the DESCRIPTION file accordingly. Use `fusen::inflate(flat_file = "dev/flat_additional.Rmd", document = FALSE)` to avoid that.
   + This will also run `devtools::check()`. Use `fusen::inflate(flat_file = "dev/flat_additional.Rmd", check = FALSE)` to avoid that.
+  + This will create a new vignette in your package. You may want to avoid this with `fusen::inflate(flat_file = "dev/flat_additional.Rmd", vignette_name = NA)`
 
 **That's it!**  
 You added a new function in your package, along with example, test and a new vignette:
@@ -139,64 +145,65 @@ You added a new function in your package, along with example, test and a new vig
 ```{r, echo=FALSE}
 comp.table <- tibble::tibble(
   `Classical with {devtools}` = c(
-'
+    "
 - File > New Project > New directory > Package with devtools
-    + Or `devtools::create()`',
-  '
-- Open "DESCRIPTION" file  
-- Write your information  
-- Run function for the desired license in the console  
+    + Or `devtools::create()`",
+    '
+- Open "DESCRIPTION" file
+- Write your information
+- Run function for the desired license in the console
     + `usethis::use_*_license()`',
-'
+    '
 - Create and open a file for your functions in "R/"
-      + `usethis::use_r("my_fonction")`  
-- Write the code of your function  
-- Write a reproducible example for your function  
+      + `usethis::use_r("my_fonction")`
+- Write the code of your function
+- Write a reproducible example for your function
 
-- Open DESCRIPTION file and fill the list of dependencies required  
+- Open DESCRIPTION file and fill the list of dependencies required
 
-- Create and open a new file for your tests in "tests/testthat/"  
-      + `usethis::use_testthat()`  
-      + `usethis::use_test("my_fonction")`  
-- Write some unit tests for your function 
+- Create and open a new file for your tests in "tests/testthat/"
+      + `usethis::use_testthat()`
+      + `usethis::use_test("my_fonction")`
+- Write some unit tests for your function
 
-- Create and open a new file for a vignette in "vignettes/"  
-      + `usethis::use_vignette("Vignette title")`  
-      
+- Create and open a new file for a vignette in "vignettes/"
+      + `usethis::use_vignette("Vignette title")`
+
 - Open DESCRIPTION file and fill the list of "Suggests" dependencies required',
-'
-- Generate documentation  
-  + Either `attachment::att_amend_desc()`  
-  + Or `roxygen2::roxygenise()`  
-  
-- Check the package  
-  + `devtools::check()` => `0 errors, 0 warnings, 0 notes`',
-'=> For one function, you need to switch regularly between 4 files'
+    "
+- Generate documentation
+  + Either `attachment::att_amend_desc()`
+  + Or `roxygen2::roxygenise()`
+
+- Check the package
+  + `devtools::check()` => `0 errors, 0 warnings, 0 notes`",
+    "=> For one function, you need to switch regularly between 4 files"
   ),
   `With {fusen}` = c(
-    '
+    "
 - File > New Project > New directory > Package with {fusen}
-  + Or `fusen::create_fusen()`',
-    '
+  + Or `fusen::create_fusen()`",
+    "
 - Fill your information in the opened flat file
-- Execute the chunk `description`',
-'
-- Write code, examples and test in the unique opened flat file',
-'
+- Execute the chunk `description`",
+    "
+- Write code, examples and test in the unique opened flat file",
+    '
 - Inflate your flat file
   + Execute `fusen::inflate()` in the last "development" chunk',
-'=> For one function, you need only one file'
+    "=> For one function, you need only one file"
   )
 )
 
 if (knitr::is_html_output()) {
   comp.table <- tibble::as_tibble(
-    lapply(comp.table, function(x) gsub("  ", "&#8194;", gsub("\n", "<br/>", x))))
+    lapply(comp.table, function(x) gsub("  ", "&#8194;", gsub("\n", "<br/>", x)))
+  )
   knitr::kable(comp.table, format = "html", escape = FALSE)
 } else if (knitr::is_latex_output()) {
   knitr::kable(comp.table, format = "latex", escape = FALSE)
 } else {
   knitr::kable(comp.table, format = "markdown", escape = FALSE)
-}  
+}
 ```
 

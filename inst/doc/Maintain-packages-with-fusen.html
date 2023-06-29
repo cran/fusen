@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fusen)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(fusen)</span></code></pre></div>
 <div id="daily-use-of-fusen" class="section level1">
 <h1>Daily use of {fusen}</h1>
 <div id="add-a-new-set-of-chunks-in-the-current-rmd" class="section level2">
@@ -354,7 +354,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div id="create-a-new-flat-rmd-template" class="section level2">
 <h2>Create a new flat Rmd template</h2>
 <p>To add a new family of functions, create a new flat Rmd template</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">add_flat_template</span>(<span class="at">template =</span> <span class="st">&quot;add&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">add_flat_template</span>(<span class="at">template =</span> <span class="st">&quot;add&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># or directly</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">add_additional</span>()</span></code></pre></div>
 </div>
 </div>
 <div id="how-to-maintain-a-fusen-can-i-use-fusen-with-old-way-packages" class="section level1">
@@ -452,46 +454,52 @@ functionality</li>
 package</strong>
 <ul>
 <li>Commit your previous state if you are afraid of {fusen}</li>
-<li>If you are not sure enough to do it on an existing package, then
-follow the guide in <a href="https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html">“How
+<li>If you are not confident enough to try it on an existing package,
+then create a new package while following the guide in <a href="https://thinkr-open.github.io/fusen/articles/How-to-use-fusen.html">“How
 to use fusen”</a></li>
 </ul></li>
 <li>Run in the Console : <code>fusen::add_flat_template(&quot;add&quot;)</code>
 <ul>
 <li>A Rmd file appears in “dev/flat_additional.Rmd”. Open it.</li>
 </ul></li>
-<li>Add a new function in the <code>function</code> chunk. For
+<li>Write a new function in the <code>function</code> chunk. For
 instance:</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; My median</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param x Vector of Numeric values</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @inheritParams stats::median</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; Median of vector x</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>my_median <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) {</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {<span class="fu">stop</span>(<span class="st">&quot;x should be numeric&quot;</span>)}</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  stats<span class="sc">::</span><span class="fu">median</span>(x, <span class="at">na.rm =</span> na.rm)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co">#&#39; My median</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&#39; @param x Vector of Numeric values</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&#39; @inheritParams stats::median</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&#39; @return</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&#39; Median of vector x</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&#39; @export</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&#39; @examples</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>my_median <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;x should be numeric&quot;</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  }</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  stats<span class="sc">::</span><span class="fu">median</span>(x, <span class="at">na.rm =</span> na.rm)</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>}</span></code></pre></div>
 <ul>
-<li>Add a corresponding example in the <code>example</code> chunk. For
-instance:</li>
+<li>Add a corresponding example in the <code>example</code> chunk.
+<ul>
+<li>If you’re looking for an equivalent of <code>load_all()</code> but
+for all functions inside this flat file before inflating, you can use
+<code>fusen::load_flat_functions()</code></li>
+</ul></li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">my_median</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">my_median</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)</span></code></pre></div>
 <ul>
 <li>Add a corresponding unit test in the <code>test</code> chunk. For
 instance:</li>
 </ul>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;my_median works properly and show error if needed&quot;</span>, {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">my_median</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) <span class="sc">==</span> <span class="fl">6.5</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">my_median</span>(<span class="st">&quot;text&quot;</span>))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;my_median works properly and show error if needed&quot;</span>, {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">my_median</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>) <span class="sc">==</span> <span class="fl">6.5</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">expect_error</span>(<span class="fu">my_median</span>(<span class="st">&quot;text&quot;</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>})</span></code></pre></div>
 <ul>
-<li>Run command of the last chunk:
+<li>Run the command of the last chunk of the flat file:
 <code>fusen::inflate(flat_file = &quot;dev/flat_additional.Rmd&quot;)</code>
 <ul>
 <li>This will run {attachment} behind the scene and may modify the list
@@ -501,6 +509,9 @@ to avoid that.</li>
 <li>This will also run <code>devtools::check()</code>. Use
 <code>fusen::inflate(flat_file = &quot;dev/flat_additional.Rmd&quot;, check = FALSE)</code>
 to avoid that.</li>
+<li>This will create a new vignette in your package. You may want to
+avoid this with
+<code>fusen::inflate(flat_file = &quot;dev/flat_additional.Rmd&quot;, vignette_name = NA)</code></li>
 </ul></li>
 </ul>
 <p><strong>That’s it!</strong><br />
@@ -540,8 +551,8 @@ devtools<br />  + Or <code>devtools::create()</code>
 </tr>
 <tr>
 <td style="text-align:left;">
-<br />- Open “DESCRIPTION” file <br />- Write your information <br />- Run
-function for the desired license in the console <br />  +
+<br />- Open “DESCRIPTION” file<br />- Write your information<br />- Run
+function for the desired license in the console<br />  +
 <code>usethis::use_*_license()</code>
 </td>
 <td style="text-align:left;">
@@ -552,16 +563,15 @@ chunk <code>description</code>
 <tr>
 <td style="text-align:left;">
 <br />- Create and open a file for your functions in “R/”<br />   +
-<code>usethis::use_r(&quot;my_fonction&quot;)</code> <br />- Write the code of your
-function <br />- Write a reproducible example for your
-function <br /><br />- Open DESCRIPTION file and fill the list of
-dependencies required <br /><br />- Create and open a new file for your
-tests in “tests/testthat/” <br />   +
-<code>usethis::use_testthat()</code> <br />   +
-<code>usethis::use_test(&quot;my_fonction&quot;)</code> <br />- Write some unit
-tests for your function <br /><br />- Create and open a new file for a
-vignette in “vignettes/” <br />   +
-<code>usethis::use_vignette(&quot;Vignette title&quot;)</code> <br />   <br />- Open
+<code>usethis::use_r(&quot;my_fonction&quot;)</code><br />- Write the code of your
+function<br />- Write a reproducible example for your function<br /><br />-
+Open DESCRIPTION file and fill the list of dependencies
+required<br /><br />- Create and open a new file for your tests in
+“tests/testthat/”<br />   + <code>usethis::use_testthat()</code><br />   +
+<code>usethis::use_test(&quot;my_fonction&quot;)</code><br />- Write some unit
+tests for your function<br /><br />- Create and open a new file for a
+vignette in “vignettes/”<br />   +
+<code>usethis::use_vignette(&quot;Vignette title&quot;)</code><br /><br />- Open
 DESCRIPTION file and fill the list of “Suggests” dependencies required
 </td>
 <td style="text-align:left;">
@@ -570,10 +580,10 @@ DESCRIPTION file and fill the list of “Suggests” dependencies required
 </tr>
 <tr>
 <td style="text-align:left;">
-<br />- Generate documentation <br /> + Either
-<code>attachment::att_amend_desc()</code> <br /> + Or
-<code>roxygen2::roxygenise()</code> <br /> <br />- Check the
-package <br /> + <code>devtools::check()</code> =&gt;
+<br />- Generate documentation<br /> + Either
+<code>attachment::att_amend_desc()</code><br /> + Or
+<code>roxygen2::roxygenise()</code><br /><br />- Check the package<br /> +
+<code>devtools::check()</code> =&gt;
 <code>0 errors, 0 warnings, 0 notes</code>
 </td>
 <td style="text-align:left;">

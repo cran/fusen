@@ -1,3 +1,66 @@
+# fusen 0.5.1
+
+## New features
+
+### Inflate all active flat file
+
+- `inflate_all()` uses the configuration file to inflate all your flat files at once. `document` and `check` options are thus only run once for all flat files. (#204, @ymansiaux)
+- This requires to run `inflate()` at least once for each flat file.
+- This also requires to register all other files, that were present in the package before this version of 'fusen' with `register_all_to_config()`
+
+### List all files created with an `inflate()` in a config file with parameters
+
+- `inflate()` creates a configuration file "dev/config_fusen.yaml" to register all files created while inflating the corresponding flat file, along with inflate parameters (#198, @ymansiaux)
+
+## Breaking changes
+
+- Arguments `rmd` and `name` in function `inflate()` now lead to errors (Deprecated since v0.3.0).
+- `add_dev_history()` was deprecated since v0.3.0 in favor of `add_flat_template()`. Now `add_dev_history()` only adds a "dev_history.Rmd" file in the "dev/" directory.
+- `add_flat_template(template = "minimal")` no longer exists to avoid confusion between minimal package or minimal flat file. Indeed, now there are `add_flat_template(template = "minimal_package")` (also `add_minimal_package()`) or `add_flat_template(template = "minimal_flat")` (also `add_minimal_flat()`). The latter doing exactly the same as `add_additional()` (#187)
+- `create_fusen()` still uses `minimal` as `minimal_package`
+
+## Bug fixes
+
+- Fix using line break after function name in flat files (#142, @FlorenceMounier)
+- If project directory is renamed by "my.package (Copy)", `inflate()` still works, even if this name is not a proper package name. What is important is that DESCRIPTION Package name is correct.
+
+## Major changes
+
+- `create_fusen()` and the RStudio gui interface now accept `flat_file` parameter to name the first flat file as well as the first function (when using 'minimal' template).
+- The tips and tricks vignette shortly presents how to combine {fusen} and {golem} (#187)
+- Incorrect function names issued from addins or `add_flat_template()` are cleaned before being included in the flat file to follow underscore rule.
+
+## Minor changes
+
+- Update CONTRIBUTING to speak about flat file in {fusen} itself
+- replace the maintainer's name from `fill_description()` in examples, templates and tests (#155, @FlorenceMounier)
+- `create_fusen()` vaccinates created git project (#171)
+- Examples under function roxygen documentation are cleaned from extra spaces after empty `#'` to avoid git diff against code linters / stylers.
+
+
+
+# fusen 0.5.0
+
+## New features
+
+### Publish your package website on GitHub
+
+- Publish your {fusen} project on a GitHub website with one command: `init_share_on_github()`
+
+### List all files created with an `inflate()` in a config file
+
+- `inflate()` creates a "dev/config_fusen.yaml" file to register all files created while inflating the corresponding flat file (First steps in #24)
+- Migrate from a non-fusen package or a previous version of 'fusen' with `register_all_to_config()`
+- Create or update the config file from a data.frame with `df_to_config()` to list legitimate scripts (even if not associated with a flat file)
+
+### Others
+
+- Allow multiple examples for the same function (#149)
+
+## Bug fixes
+
+- Fix for when using word "`function(`" in documentation (#174, @FlorenceMounier)
+
 # fusen 0.4.2
 
 ## Bug

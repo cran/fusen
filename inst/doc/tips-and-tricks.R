@@ -16,7 +16,9 @@ knitr::opts_chunk$set(
 #  if (!file.exists(the_file)) {
 #    # The path to use during dev in the flat file
 #    the_file <- file.path("tests", "testthat", the_file)
-#    if (!file.exists(the_file)) {stop(the_file, " does not exist")}
+#    if (!file.exists(the_file)) {
+#      stop(the_file, " does not exist")
+#    }
 #  }
 #  
 #  my_file <- read.csv(the_file)

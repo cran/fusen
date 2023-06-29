@@ -12,13 +12,14 @@ library(fusen)
 #    pkg = dummypackage,
 #    fields = list(
 #      Title = "Build A Package From Rmarkdown file",
-#      Description = paste("Use Rmarkdown First method to build your package.",
-#                          "Start your package with documentation.",
-#                          "Everything can be set from a Rmarkdown file in your project."),
+#      Description = paste(
+#        "Use Rmarkdown First method to build your package.",
+#        "Start your package with documentation.",
+#        "Everything can be set from a Rmarkdown file in your project."
+#      ),
 #      `Authors@R` = c(
-#        person("Sebastien", "Rochette", email = "sebastien@thinkr.fr",
-#               role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1565-9313")),
-#        person(given = "ThinkR", role = "cph")
+#        person("John", "Doe", email = "john@email.me", role = c("aut", "cre"), comment = c(ORCID = "0000-0000-0000-0000")),
+#        person(given = "Company", role = "cph")
 #      )
 #    )
 #  )
@@ -44,12 +45,14 @@ library(fusen)
 #  # From inside the package
 #  usethis::with_project(dummypackage, {
 #    # Define License with use_*_license()
-#    usethis::use_mit_license("Sébastien Rochette")
+#    usethis::use_mit_license("John Doe")
 #  
 #    # You may need to execute inflate() in the console directly
-#    fusen::inflate(pkg = dummypackage,
-#                   flat_file = dev_file,
-#                   vignette_name = "Get started")
+#    fusen::inflate(
+#      pkg = dummypackage,
+#      flat_file = dev_file,
+#      vignette_name = "Get started"
+#    )
 #  })
 #  
 #  # Explore directory of the package
@@ -61,4 +64,6 @@ library(fusen)
 ## ----example, eval=FALSE------------------------------------------------------
 #  # Add an additional dev template
 #  add_flat_template(template = "add", pkg = dummypackage)
+#  # or directly
+#  add_additional(pkg = dummypackage)
 
