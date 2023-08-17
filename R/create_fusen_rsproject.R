@@ -27,7 +27,7 @@ create_fusen <- function(path,
                          overwrite = FALSE,
                          with_git = FALSE) {
   path <- normalizePath(path, mustWork = FALSE)
-  template <- match.arg(template)
+  template <- match.arg(template, choices = create_fusen_choices)
 
   project_name <- get_pkg_name(pkg = path)
   if (project_name != asciify_name(project_name, to_pkg = TRUE)) {
@@ -125,7 +125,7 @@ create_fusen_gui <- function(path,
                              flat_name = template,
                              with_git) {
   create_fusen(
-    path = file.path(getwd(), path),
+    path = file.path(normalize_path_winslash(getwd()), path),
     template = template,
     flat_name = flat_name,
     open = FALSE, # Project opening is done spontaneously by Rstudio Project Wizard

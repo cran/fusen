@@ -14,11 +14,13 @@ library(fusen)
 #  inflate_all()
 #  # Or inflate_all_no_check() to prevent checks to run
 #  inflate_all_no_check()
+#  # Or inflate with the styler you want
+#  inflate_all(stylers = styler::style_pkg)
 #  #' }
 #  
 #  # You can also inflate_all flats of another package as follows
 #  # Example with a dummy package with a flat file
-#  dummypackage <- tempfile("inflateall")
+#  dummypackage <- tempfile("inflateall.otherpkg")
 #  dir.create(dummypackage)
 #  fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package"))
 #  flat_files <- add_minimal_package(
