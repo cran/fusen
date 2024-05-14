@@ -1,23 +1,23 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----setup--------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(fusen)
 
-## ----eval = FALSE-------------------------------------------------------------
+## -----------------------------------------------------------------------------
 #  fusen::inflate_all_no_check()
 
-## ----example-check_not_registered_files, eval = FALSE-------------------------
+## ----example-check_not_registered_files---------------------------------------
 #  #' \dontrun{
 #  # Run this on the current package in development
 #  out_csv <- check_not_registered_files()
 #  file.edit(out_csv)
 #  #' }
 
-## ----example2-check_not_registered_files, eval = FALSE------------------------
+## ----example2-check_not_registered_files--------------------------------------
 #  # Or you can try on the reproducible example
 #  dummypackage <- tempfile("clean")
 #  dir.create(dummypackage)
@@ -53,14 +53,14 @@ library(fusen)
 #  })
 #  unlink(dummypackage, recursive = TRUE)
 
-## ----example-register_all_to_config-1, eval = FALSE---------------------------
+## ----example-register_all_to_config-1-----------------------------------------
 #  #' \dontrun{
 #  # Usually run this one inside the current project
 #  # Note: running this will write "dev/config_fusen.yaml" in your working directory
 #  register_all_to_config()
 #  #' }
 
-## ----example-register_all_to_config-2, eval = FALSE---------------------------
+## ----example-register_all_to_config-2-----------------------------------------
 #  # Or you can try on the reproducible example
 #  dummypackage <- tempfile("register")
 #  dir.create(dummypackage)

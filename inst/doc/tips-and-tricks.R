@@ -1,16 +1,16 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  inflate(vignette_name = c("Super title" = "01-Super Vignette Index Entry"))
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  inflate(vignette_name = NA)
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  # The path relative to the "tests/testthat" directory for tests
 #  the_file <- "my_file.csv"
 #  if (!file.exists(the_file)) {

@@ -27,31 +27,46 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 <style type="text/css">
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-</style>
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 
 <style type="text/css">
-code {
-white-space: pre;
-}
-.sourceCode {
-overflow: visible;
-}
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -63,54 +78,55 @@ pre > code.sourceCode { white-space: pre-wrap; }
 pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-{ counter-reset: source-line 0; }
+  { counter-reset: source-line 0; }
 pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
+  { position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-{ }
+  {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } 
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.at { color: #7d9029; } 
-code span.bn { color: #40a070; } 
-code span.bu { color: #008000; } 
-code span.cf { color: #007020; font-weight: bold; } 
-code span.ch { color: #4070a0; } 
-code span.cn { color: #880000; } 
-code span.co { color: #60a0b0; font-style: italic; } 
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.do { color: #ba2121; font-style: italic; } 
-code span.dt { color: #902000; } 
-code span.dv { color: #40a070; } 
-code span.er { color: #ff0000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #40a070; } 
-code span.fu { color: #06287e; } 
-code span.im { color: #008000; font-weight: bold; } 
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.kw { color: #007020; font-weight: bold; } 
-code span.op { color: #666666; } 
-code span.ot { color: #007020; } 
-code span.pp { color: #bc7a00; } 
-code span.sc { color: #4070a0; } 
-code span.ss { color: #bb6688; } 
-code span.st { color: #4070a0; } 
-code span.va { color: #19177c; } 
-code span.vs { color: #4070a0; } 
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -340,43 +356,29 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(fusen)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(fusen)</span></code></pre></div>
 <!-- WARNING - This vignette is generated by {fusen} from dev/flat_register_config_file.Rmd: do not edit by hand -->
 <div id="fusen-registers-all-files-of-your-package" class="section level2">
 <h2>{fusen} registers all files of your package</h2>
-<p>From {fusen} &gt;=0.5, a file named “dev/config_fusen.yaml” (by
-default) registers all files created from a specific “flat” file as soon
-as you inflate it. This helps you keep track on the link between flat
-files and all R, tests and vignettes files created in your package.</p>
-<p>This configuration file also register all files not created from a
-flat file. This helps you keep your package clean.</p>
+<p>From {fusen} &gt;=0.5, a file named “dev/config_fusen.yaml” (by default) registers all files created from a specific “flat” file as soon as you inflate it. This helps you keep track on the link between flat files and all R, tests and vignettes files created in your package.</p>
+<p>This configuration file also register all files not created from a flat file. This helps you keep your package clean.</p>
 <!--
 To make this work properly, you will have to register all files that were not created from a flat file. `add_files_to_config()` will help you do so (See below: "Register some specific files, even with regex").  
 -->
-<p>To know if you have some special steps to realize with this version
-of {fusen}, run:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>fusen<span class="sc">::</span><span class="fu">inflate_all_no_check</span>()</span></code></pre></div>
-<p>Messages of this function will guide you through the transition if
-you used a too old version of {fusen}.</p>
+<p>To know if you have some special steps to realize with this version of {fusen}, run:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>fusen<span class="op">::</span><span class="kw">inflate_all_no_check</span>()</span></code></pre></div>
+<p>Messages of this function will guide you through the transition if you used a too old version of {fusen}.</p>
 <p>Chances are that you will need to:</p>
 <ol style="list-style-type: decimal">
-<li>Inflate each flat file of your project one by one (at least once)
-with this version of {fusen}</li>
+<li>Inflate each flat file of your project one by one (at least once) with this version of {fusen}</li>
 <li>Run <code>fusen::check_not_registered_files()</code></li>
-<li>Check the content of “dev/config_not_registered.csv” if there are
-unregistered files.</li>
-<li>Clean up your package of useless unregistered files if
-required.</li>
-<li>Register all remaining unregistered files with
-<code>fusen::register_all_to_config()</code></li>
+<li>Check the content of “dev/config_not_registered.csv” if there are unregistered files.</li>
+<li>Clean up your package of useless unregistered files if required.</li>
+<li>Register all remaining unregistered files with <code>fusen::register_all_to_config()</code></li>
 </ol>
-<p>Try again <code>fusen::inflate_all_no_check()</code> or
-<code>fusen::inflate_all()</code> and that should be good now.<br />
-<em>Read
-<code>vignette(&quot;inflate-all-your-flat-files&quot;, package = &quot;fusen&quot;)</code>
-to know more about <code>inflate_all()</code>.</em></p>
+<p>Try again <code>fusen::inflate_all_no_check()</code> or <code>fusen::inflate_all()</code> and that should be good now.<br />
+<em>Read <code>vignette(&quot;inflate-all-your-flat-files&quot;, package = &quot;fusen&quot;)</code> to know more about <code>inflate_all()</code>.</em></p>
 <!--
-
 ### Register some specific files, even with regex
 
 TODO?
@@ -387,195 +389,145 @@ You may not want to register each new file that does not come during an inflate 
 <div id="what-is-the-configuration-file" class="section level2">
 <h2>What is the configuration file?</h2>
 <p>The configuration file is stored as “dev/config_fusen.yaml”.<br />
-This lists all flat files that were inflated, along with the lists of
-all files created during inflate and the parameters used to
-inflate.<br />
-This also list all other files, not created with the flat files, under a
-section named “keep”.</p>
-<p>For instance, a part of the configuration file of package {fusen}
-looks like:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">flat_addins.Rmd</span><span class="kw">:</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="at">  </span><span class="fu">path</span><span class="kw">:</span><span class="at"> dev/flat_addins.Rmd</span></span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="at">  </span><span class="fu">state</span><span class="kw">:</span><span class="at"> active</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="at">  </span><span class="fu">R</span><span class="kw">:</span><span class="at"> R/build_fusen_chunks.R</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="at">  </span><span class="fu">tests</span><span class="kw">:</span><span class="at"> tests/testthat/test-build_fusen_chunks.R</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="at">  </span><span class="fu">vignettes</span><span class="kw">:</span><span class="at"> </span><span class="kw">[]</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="at">  </span><span class="fu">inflate</span><span class="kw">:</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="at">    </span><span class="fu">flat_file</span><span class="kw">:</span><span class="at"> dev/flat_addins.Rmd</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="at">    </span><span class="fu">vignette_name</span><span class="kw">:</span><span class="at"> .na</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="at">    </span><span class="fu">open_vignette</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="at">    </span><span class="fu">check</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="at">    </span><span class="fu">document</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="at">    </span><span class="fu">overwrite</span><span class="kw">:</span><span class="at"> ask</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="fu">keep</span><span class="kw">:</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="at">  </span><span class="fu">path</span><span class="kw">:</span><span class="at"> keep</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="at">  </span><span class="fu">R</span><span class="kw">:</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/addins.R</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/create_fusen_rsproject.R</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/fusen-package.R</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/globals.R</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/inflate-utils.R</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/load_flat_functions.R</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/utils-pipe.R</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="at">  </span><span class="fu">tests</span><span class="kw">:</span></span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-create_fusen_rsproject.R</span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-inflate_qmd.R</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-inflate_utils.R</span></span>
-<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-load_flat_functions.R</span></span>
-<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-skeleton.R</span></span>
-<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="at">  </span><span class="fu">vignettes</span><span class="kw">:</span><span class="at"> vignettes/tips-and-tricks.Rmd</span></span></code></pre></div>
+This lists all flat files that were inflated, along with the lists of all files created during inflate and the parameters used to inflate.<br />
+This also list all other files, not created with the flat files, under a section named “keep”.</p>
+<p>For instance, a part of the configuration file of package {fusen} looks like:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="fu">flat_addins.Rmd</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="at">  </span><span class="fu">path</span><span class="kw">:</span><span class="at"> dev/flat_addins.Rmd</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="at">  </span><span class="fu">state</span><span class="kw">:</span><span class="at"> active</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="at">  </span><span class="fu">R</span><span class="kw">:</span><span class="at"> R/build_fusen_chunks.R</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="at">  </span><span class="fu">tests</span><span class="kw">:</span><span class="at"> tests/testthat/test-build_fusen_chunks.R</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="at">  </span><span class="fu">vignettes</span><span class="kw">:</span><span class="at"> </span><span class="kw">[]</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="at">  </span><span class="fu">inflate</span><span class="kw">:</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="at">    </span><span class="fu">flat_file</span><span class="kw">:</span><span class="at"> dev/flat_addins.Rmd</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="at">    </span><span class="fu">vignette_name</span><span class="kw">:</span><span class="at"> .na</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="at">    </span><span class="fu">open_vignette</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a><span class="at">    </span><span class="fu">check</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a><span class="at">    </span><span class="fu">document</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a><span class="at">    </span><span class="fu">overwrite</span><span class="kw">:</span><span class="at"> ask</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="fu">keep</span><span class="kw">:</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="at">  </span><span class="fu">path</span><span class="kw">:</span><span class="at"> keep</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a><span class="at">  </span><span class="fu">R</span><span class="kw">:</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/addins.R</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/create_fusen_rsproject.R</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/fusen-package.R</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/globals.R</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/inflate-utils.R</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/load_flat_functions.R</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> R/utils-pipe.R</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true"></a><span class="at">  </span><span class="fu">tests</span><span class="kw">:</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-create_fusen_rsproject.R</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-inflate_qmd.R</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-inflate_utils.R</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-load_flat_functions.R</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true"></a><span class="at">  </span><span class="kw">-</span><span class="at"> tests/testthat/test-skeleton.R</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true"></a><span class="at">  </span><span class="fu">vignettes</span><span class="kw">:</span><span class="at"> vignettes/tips-and-tricks.Rmd</span></span></code></pre></div>
 </div>
 <div id="what-about-unregistered-files" class="section level2">
 <h2>What about unregistered files?</h2>
-<p>Imagine you inflated some function named <code>my_fun()</code>, and
-then you decide to change the name of the function to
-<code>my_new_fun()</code>. After inflate, there will be two files
-“R/myfun.R” and “R/my_new_fun.R” in your package. However, “R/myfun.R”
-should be deleted because this function should not exist anymore.</p>
-<p>If you are unsure about which files should still be there or not, you
-can run <code>fusen::check_not_registered_files()</code>. In this case,
-“R/myfun.R” will appear in the csv file created in
-“dev/config_not_registered.csv”, with a message like “Possibly
-deprecated file”.</p>
-<p>You now have the possibility to detect deprecated files of your
-project.<br />
-Run <code>fusen::check_not_registered_files()</code> as often as you
-need if you want to clean your project. <em>Note that this function is
-included in <code>fusen::inflate_all()</code> and
-<code>fusen::inflate_all_no_check()</code>, which let you the
-opportunity to clean your project regularly.</em></p>
-<p>To be able to detect deprecated files, all legitimate files need to
-be registered. Even the ones that you created manually. In this case,
-they will be listed under the <code>&quot;keep&quot;</code> section. {fusen} knows
-that it should not bother you with these files.</p>
+<p>Imagine you inflated some function named <code>my_fun()</code>, and then you decide to change the name of the function to <code>my_new_fun()</code>. After inflate, there will be two files “R/myfun.R” and “R/my_new_fun.R” in your package. However, “R/myfun.R” should be deleted because this function should not exist anymore.</p>
+<p>If you are unsure about which files should still be there or not, you can run <code>fusen::check_not_registered_files()</code>. In this case, “R/myfun.R” will appear in the csv file created in “dev/config_not_registered.csv”, with a message like “Possibly deprecated file”.</p>
+<p>You now have the possibility to detect deprecated files of your project.<br />
+Run <code>fusen::check_not_registered_files()</code> as often as you need if you want to clean your project. <em>Note that this function is included in <code>fusen::inflate_all()</code> and <code>fusen::inflate_all_no_check()</code>, which let you the opportunity to clean your project regularly.</em></p>
+<p>To be able to detect deprecated files, all legitimate files need to be registered. Even the ones that you created manually. In this case, they will be listed under the <code>&quot;keep&quot;</code> section. {fusen} knows that it should not bother you with these files.</p>
 </div>
 <div id="deprecate-flat-files-after-inflate" class="section level2">
 <h2>Deprecate flat files after inflate</h2>
-<p>In the example configuration file above, you can note that the
-“flat_addins.Rmd” section has a parameter <code>state: active</code>
-which means that <code>inflate_all()</code> will indeed inflate this
-file.</p>
-<p>If your practice of {fusen} is to inflate it once, and then continue
-development in the R, test and vignette files directly, then you may
-want to properly deprecated the flat file.</p>
-<p>In this case, we recommend to store your flat file in a sub-directory
-named “dev/dev_history/” as this will be the default behavior in a
-future release. Then, you can change your flat file to
-<code>state: deprecated</code> in the configuration file, and change
-both <code>path:</code> section of the file too.</p>
+<p>In the example configuration file above, you can note that the “flat_addins.Rmd” section has a parameter <code>state: active</code> which means that <code>inflate_all()</code> will indeed inflate this file.</p>
+<p>If your practice of {fusen} is to inflate it once, and then continue development in the R, test and vignette files directly, then you may want to properly deprecated the flat file.</p>
+<p>In this case, we recommend to store your flat file in a sub-directory named “dev/dev_history/” as this will be the default behavior in a future release. Then, you can change your flat file to <code>state: deprecated</code> in the configuration file, and change both <code>path:</code> section of the file too.</p>
 </div>
 <div id="detect-all-files-that-are-not-registered-in-configuration-file" class="section level2">
 <h2>Detect all files that are not registered in configuration file</h2>
-<p><code>check_not_registered_files()</code> shows files that are not
-already registered in the yaml config file.<br />
-<em>Note that <code>check_not_registered_files()</code> will try to
-guess the source flat template, if you used {fusen} &gt;= 0.4
-before.</em></p>
-<p>The csv file “dev/config_not_registered.csv” created by
-<code>check_not_registered_files()</code> lists all unregistered files.
-It contains three columns:</p>
+<p><code>check_not_registered_files()</code> shows files that are not already registered in the yaml config file.<br />
+<em>Note that <code>check_not_registered_files()</code> will try to guess the source flat template, if you used {fusen} &gt;= 0.4 before.</em></p>
+<p>The csv file “dev/config_not_registered.csv” created by <code>check_not_registered_files()</code> lists all unregistered files. It contains three columns:</p>
 <ul>
 <li>type: The type of file among R, test or vignette</li>
 <li>path: The path where to find the unregistered file</li>
-<li>origin: If the file was created from a former flat file, the origin
-may be detected.
+<li>origin: If the file was created from a former flat file, the origin may be detected.
 <ul>
-<li>If the flat file detected already appears in the configuration file,
-the unregistered file is probably a deprecated file that needs to be
-deleted. But only you know.</li>
-<li>If the flat file detected is not already in the configuration file,
-the section for this flat file will be created during the next step with
-<code>register_all_to_config()</code>.</li>
-<li>If no source was detected, this probably means that you created it
-manually.</li>
+<li>If the flat file detected already appears in the configuration file, the unregistered file is probably a deprecated file that needs to be deleted. But only you know.</li>
+<li>If the flat file detected is not already in the configuration file, the section for this flat file will be created during the next step with <code>register_all_to_config()</code>.</li>
+<li>If no source was detected, this probably means that you created it manually.</li>
 </ul></li>
 </ul>
-<p>Decide which files you want to delete. Then run
-<code>fusen::register_all_to_config()</code> to register all remaining
-files in the “keep” section.</p>
-<p>Have a look at the configuration file at the end of the process to
-check that everything is set properly. Maybe some flat files detected
-should not be in <code>state: active</code> but in
-<code>state: deprecated</code>. You’re the only one who knows.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#&#39; \dontrun{</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co"># Run this on the current package in development</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>out_csv <span class="ot">&lt;-</span> <span class="fu">check_not_registered_files</span>()</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">file.edit</span>(out_csv)</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&#39; }</span></span></code></pre></div>
+<p>Decide which files you want to delete. Then run <code>fusen::register_all_to_config()</code> to register all remaining files in the “keep” section.</p>
+<p>Have a look at the configuration file at the end of the process to check that everything is set properly. Maybe some flat files detected should not be in <code>state: active</code> but in <code>state: deprecated</code>. You’re the only one who knows.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co">#&#39; \dontrun{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="co"># Run this on the current package in development</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>out_csv &lt;-<span class="st"> </span><span class="kw">check_not_registered_files</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="kw">file.edit</span>(out_csv)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="co">#&#39; }</span></span></code></pre></div>
 <!-- Use eval=FALSE because inflate cannot work inside a Rmd vignette -->
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Or you can try on the reproducible example</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>dummypackage <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="st">&quot;clean&quot;</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">dir.create</span>(dummypackage)</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># {fusen} steps</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">fill_description</span>(<span class="at">pkg =</span> dummypackage, <span class="at">fields =</span> <span class="fu">list</span>(<span class="at">Title =</span> <span class="st">&quot;Dummy Package&quot;</span>))</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>dev_file <span class="ot">&lt;-</span> <span class="fu">suppressMessages</span>(<span class="fu">add_flat_template</span>(<span class="at">pkg =</span> dummypackage, <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">open =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>flat_file <span class="ot">&lt;-</span> dev_file[<span class="fu">grepl</span>(<span class="st">&quot;flat_&quot;</span>, dev_file)]</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># Inflate once</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">with_project</span>(dummypackage, {</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  <span class="fu">suppressMessages</span>(</span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>    <span class="fu">inflate</span>(</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>      <span class="at">pkg =</span> dummypackage, <span class="at">flat_file =</span> flat_file,</span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>      <span class="at">vignette_name =</span> <span class="st">&quot;Get started&quot;</span>, <span class="at">check =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>      <span class="at">open_vignette =</span> <span class="cn">FALSE</span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>    )</span>
-<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>  )</span>
-<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a>  <span class="co"># Add a not registered file to the package</span></span>
-<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;# test R file</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="at">file =</span> <span class="fu">file.path</span>(dummypackage, <span class="st">&quot;R&quot;</span>, <span class="st">&quot;to_keep.R&quot;</span>))</span>
-<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a>  <span class="co"># Use the function to check the list of files</span></span>
-<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a>  out_csv <span class="ot">&lt;-</span> <span class="fu">check_not_registered_files</span>(dummypackage)</span>
-<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>  out_csv</span>
-<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a>  <span class="co"># Read the csv to see what is going on</span></span>
-<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a>  content_csv <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(out_csv, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>  content_csv</span>
-<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a>  <span class="co"># Keep it all or delete some files, and then register all remaining</span></span>
-<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a>  out_config <span class="ot">&lt;-</span> <span class="fu">register_all_to_config</span>()</span>
-<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a>  out_config</span>
-<span id="cb5-31"><a href="#cb5-31" tabindex="-1"></a>  <span class="co"># Open the out_config file to see what&#39;s going on</span></span>
-<span id="cb5-32"><a href="#cb5-32" tabindex="-1"></a>  yaml<span class="sc">::</span><span class="fu">read_yaml</span>(out_config)</span>
-<span id="cb5-33"><a href="#cb5-33" tabindex="-1"></a>})</span>
-<span id="cb5-34"><a href="#cb5-34" tabindex="-1"></a><span class="fu">unlink</span>(dummypackage, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="co"># Or you can try on the reproducible example</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a>dummypackage &lt;-<span class="st"> </span><span class="kw">tempfile</span>(<span class="st">&quot;clean&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="kw">dir.create</span>(dummypackage)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true"></a><span class="co"># {fusen} steps</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true"></a><span class="kw">fill_description</span>(<span class="dt">pkg =</span> dummypackage, <span class="dt">fields =</span> <span class="kw">list</span>(<span class="dt">Title =</span> <span class="st">&quot;Dummy Package&quot;</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true"></a>dev_file &lt;-<span class="st"> </span><span class="kw">suppressMessages</span>(<span class="kw">add_flat_template</span>(<span class="dt">pkg =</span> dummypackage, <span class="dt">overwrite =</span> <span class="ot">TRUE</span>, <span class="dt">open =</span> <span class="ot">FALSE</span>))</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true"></a>flat_file &lt;-<span class="st"> </span>dev_file[<span class="kw">grepl</span>(<span class="st">&quot;flat_&quot;</span>, dev_file)]</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true"></a><span class="co"># Inflate once</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true"></a>usethis<span class="op">::</span><span class="kw">with_project</span>(dummypackage, {</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true"></a>  <span class="kw">suppressMessages</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true"></a>    <span class="kw">inflate</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true"></a>      <span class="dt">pkg =</span> dummypackage, <span class="dt">flat_file =</span> flat_file,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true"></a>      <span class="dt">vignette_name =</span> <span class="st">&quot;Get started&quot;</span>, <span class="dt">check =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true"></a>      <span class="dt">open_vignette =</span> <span class="ot">FALSE</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true"></a>    )</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true"></a>  )</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true"></a>  <span class="co"># Add a not registered file to the package</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true"></a>  <span class="kw">cat</span>(<span class="st">&quot;# test R file</span><span class="ch">\n</span><span class="st">&quot;</span>, <span class="dt">file =</span> <span class="kw">file.path</span>(dummypackage, <span class="st">&quot;R&quot;</span>, <span class="st">&quot;to_keep.R&quot;</span>))</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true"></a>  <span class="co"># Use the function to check the list of files</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true"></a>  out_csv &lt;-<span class="st"> </span><span class="kw">check_not_registered_files</span>(dummypackage)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true"></a>  out_csv</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true"></a>  <span class="co"># Read the csv to see what is going on</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true"></a>  content_csv &lt;-<span class="st"> </span><span class="kw">read.csv</span>(out_csv, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true"></a>  content_csv</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true"></a>  <span class="co"># Keep it all or delete some files, and then register all remaining</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true"></a>  out_config &lt;-<span class="st"> </span><span class="kw">register_all_to_config</span>()</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true"></a>  out_config</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true"></a>  <span class="co"># Open the out_config file to see what&#39;s going on</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true"></a>  yaml<span class="op">::</span><span class="kw">read_yaml</span>(out_config)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true"></a>})</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true"></a><span class="kw">unlink</span>(dummypackage, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="how-register_all_to_config-works" class="section level2">
 <h2>How <code>register_all_to_config()</code> works</h2>
-<p>If all files of the current state are legitimate, then, you can
-register everything in the config file.</p>
-<p>Run <code>register_all_to_config()</code> in your current package to
-create the “dev/config_fusen.yaml” that registers all your files. You
-will note a “keep” section, which lists all files for which the source
-was not guessed.</p>
-<p>This function deletes the “config_not_registered.csv” created with
-<code>check_not_registered_files()</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#&#39; \dontrun{</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co"># Usually run this one inside the current project</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># Note: running this will write &quot;dev/config_fusen.yaml&quot; in your working directory</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="fu">register_all_to_config</span>()</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&#39; }</span></span></code></pre></div>
+<p>If all files of the current state are legitimate, then, you can register everything in the config file.</p>
+<p>Run <code>register_all_to_config()</code> in your current package to create the “dev/config_fusen.yaml” that registers all your files. You will note a “keep” section, which lists all files for which the source was not guessed.</p>
+<p>This function deletes the “config_not_registered.csv” created with <code>check_not_registered_files()</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="co">#&#39; \dontrun{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="co"># Usually run this one inside the current project</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a><span class="co"># Note: running this will write &quot;dev/config_fusen.yaml&quot; in your working directory</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a><span class="kw">register_all_to_config</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a><span class="co">#&#39; }</span></span></code></pre></div>
 <!-- Use eval=FALSE because inflate cannot work inside a Rmd vignette -->
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Or you can try on the reproducible example</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>dummypackage <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="st">&quot;register&quot;</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">dir.create</span>(dummypackage)</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># {fusen} steps</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="fu">fill_description</span>(<span class="at">pkg =</span> dummypackage, <span class="at">fields =</span> <span class="fu">list</span>(<span class="at">Title =</span> <span class="st">&quot;Dummy Package&quot;</span>))</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>dev_file <span class="ot">&lt;-</span> <span class="fu">suppressMessages</span>(<span class="fu">add_flat_template</span>(<span class="at">pkg =</span> dummypackage, <span class="at">overwrite =</span> <span class="cn">TRUE</span>, <span class="at">open =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>flat_file <span class="ot">&lt;-</span> dev_file[<span class="fu">grepl</span>(<span class="st">&quot;flat_&quot;</span>, dev_file)]</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co"># Inflate once</span></span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>usethis<span class="sc">::</span><span class="fu">with_project</span>(dummypackage, {</span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="fu">suppressMessages</span>(</span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>    <span class="fu">inflate</span>(</span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>      <span class="at">pkg =</span> dummypackage, <span class="at">flat_file =</span> flat_file,</span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>      <span class="at">vignette_name =</span> <span class="st">&quot;Get started&quot;</span>, <span class="at">check =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>      <span class="at">open_vignette =</span> <span class="cn">FALSE</span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>    )</span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  )</span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>  out_path <span class="ot">&lt;-</span> <span class="fu">register_all_to_config</span>(dummypackage)</span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  <span class="co"># Look at the output</span></span>
-<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>  yaml<span class="sc">::</span><span class="fu">read_yaml</span>(out_path)</span>
-<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="co"># Or you can try on the reproducible example</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>dummypackage &lt;-<span class="st"> </span><span class="kw">tempfile</span>(<span class="st">&quot;register&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a><span class="kw">dir.create</span>(dummypackage)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a><span class="co"># {fusen} steps</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a><span class="kw">fill_description</span>(<span class="dt">pkg =</span> dummypackage, <span class="dt">fields =</span> <span class="kw">list</span>(<span class="dt">Title =</span> <span class="st">&quot;Dummy Package&quot;</span>))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a>dev_file &lt;-<span class="st"> </span><span class="kw">suppressMessages</span>(<span class="kw">add_flat_template</span>(<span class="dt">pkg =</span> dummypackage, <span class="dt">overwrite =</span> <span class="ot">TRUE</span>, <span class="dt">open =</span> <span class="ot">FALSE</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a>flat_file &lt;-<span class="st"> </span>dev_file[<span class="kw">grepl</span>(<span class="st">&quot;flat_&quot;</span>, dev_file)]</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a><span class="co"># Inflate once</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a>usethis<span class="op">::</span><span class="kw">with_project</span>(dummypackage, {</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a>  <span class="kw">suppressMessages</span>(</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true"></a>    <span class="kw">inflate</span>(</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true"></a>      <span class="dt">pkg =</span> dummypackage, <span class="dt">flat_file =</span> flat_file,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true"></a>      <span class="dt">vignette_name =</span> <span class="st">&quot;Get started&quot;</span>, <span class="dt">check =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true"></a>      <span class="dt">open_vignette =</span> <span class="ot">FALSE</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true"></a>    )</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true"></a>  )</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true"></a>  out_path &lt;-<span class="st"> </span><span class="kw">register_all_to_config</span>(dummypackage)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true"></a>  <span class="co"># Look at the output</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true"></a>  yaml<span class="op">::</span><span class="kw">read_yaml</span>(out_path)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true"></a>})</span></code></pre></div>
 <!-- ### Protect existing R, tests and vignettes files -->
 <!-- `df_to_config()` allows to add your own list of files that you want to `keep` in your package, despite not being created with a flat file.   -->
 <!-- This is important if you started to develop without {fusen}, and start using a flat file from now on, so that {fusen} does not delete your existing files. -->

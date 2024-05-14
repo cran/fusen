@@ -1,3 +1,21 @@
+# fusen 0.6.0
+
+## Breaking changes
+
+- {fusen} now relies on {lightparser} instead of {parsermd} to parse flat file. This allows to avoid installation problems with {parsermd}, which is not updated anymore. As {lightparser} is lighter, this may have unattended effects on specific flat file cases. Please report any issue you may encounter. (#233)
+- `inflate_all*()` does not use parameter `clean` anymore. Use `check_unregistered` instead to check if all files are registered in the configuration file.
+
+## New features
+
+- `draw_package_structure()` along with `get_package_structure()` allows to draw the package structure with
+all functions created in each R file, and whether they are exported (#189)
+- `rename_flat_file()` allows to rename a flat file, and deals with config and inflated files
+- `deprecate_flat_file()` helps properly deprecate a flat file, modifies the config file
+and cleans the previously inflated files
+- `inflate()` detects functions renamed or removed and allow to clean the package repository (#24)
+- Allow `organisation` in `init_share_on_github()` to send to a GitHub organisation
+- Fix `load_flat_functions()` to work with VSCode
+
 # fusen 0.5.2
 
 ## New features

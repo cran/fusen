@@ -4,17 +4,23 @@
 \alias{init_share_on_github}
 \title{Initiate GitHub to share your package on a website}
 \usage{
-init_share_on_github(ask = TRUE)
+init_share_on_github(ask = TRUE, organisation = NULL)
 }
 \arguments{
 \item{ask}{Logical. \code{TRUE} (default) to ask the user to apply the instructions each time needed,
 or \code{FALSE} if the user already know what to do.}
+
+\item{organisation}{If supplied, the repo will be created under this
+organisation, instead of the login associated with the GitHub token
+discovered for this \code{host}. The user's role and the token's scopes must be
+such that you have permission to create repositories in this
+\code{organisation}.}
 }
 \value{
 The URL of the website created
 }
 \description{
-This uses {pkgdown} to share the documentation of the package through GitHub Actions.
+This uses 'pkgdown' to share the documentation of the package through GitHub Actions.
 You may need to run \code{usethis::create_github_token()}, then \code{gitcreds::gitcreds_set()} before.
 }
 \details{
@@ -33,7 +39,7 @@ You may need to run \code{usethis::create_github_token()}, then \code{gitcreds::
 \item Check the package on Linux, Windows and MacOS
 \item Calculate code coverage. Note that you may need to connect to \url{https://about.codecov.io/} to see the results of the code coverage.
 }
-\item Init continuous deployment (CD) of the {pkgdown} website documentation
+\item Init continuous deployment (CD) of the 'pkgdown' website documentation
 \item Commit and push to GitHub
 \item List remaining manual steps to make the website public
 }

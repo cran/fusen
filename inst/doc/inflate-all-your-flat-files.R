@@ -1,13 +1,13 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----setup--------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(fusen)
 
-## ----example-inflate_all, eval = FALSE----------------------------------------
+## ----example-inflate_all------------------------------------------------------
 #  #' \dontrun{
 #  # Usually, in the current package run inflate_all() directly
 #  # These functions change the current user workspace

@@ -5,6 +5,7 @@
 #' If user start their package without 'fusen' or with version < 0.4, they need to create the config file, with already existing functions.
 #'
 #' @param path Path to package to check for not registered files
+#' @param config_file Path to the configuration file
 #' @param guess Logical. Guess if the file was inflated by a specific flat file
 #' @param to_csv Logical. Whether to store along the config file, the outputs in a csv for the user to clean it manually
 #' @param open Logical. Whether to open the csv of unregistered files.
@@ -57,7 +58,7 @@
 #'   yaml::read_yaml(out_config)
 #' })
 #' unlink(dummypackage, recursive = TRUE)
-check_not_registered_files <- function(path = ".", guess = TRUE, to_csv = TRUE, open = FALSE) {
+check_not_registered_files <- function(path = ".", config_file, guess = TRUE, to_csv = TRUE, open = FALSE) {
   path <- normalize_path_winslash(path)
 
   all_r <- list.files(file.path(path, "R"), pattern = "[.]R$|[.]r$", full.names = TRUE)
@@ -81,18 +82,28 @@ check_not_registered_files <- function(path = ".", guess = TRUE, to_csv = TRUE, 
     return(NULL)
   }
 
-  config_file <- getOption("fusen.config_file", default = "dev/config_fusen.yaml")
+  if (missing(config_file)) {
+    config_file <- getOption("fusen.config_file", default = "dev/config_fusen.yaml")
+  }
 
   if (file.exists(config_file)) {
     # Read config file, and remove those already there
     config_list <- yaml::read_yaml(config_file)
-    config_list_path <- normalize_path_winslash(get_list_paths(config_list), mustWork = FALSE)
-    res_existing <- res[res$path %in% config_list_path, ]
-    res_new <- res[!res$path %in% config_list_path, ]
-    config_flat_paths <- sapply(config_list, function(x) x[["path"]])
-    config_flat_paths <- config_flat_paths[!names(config_flat_paths) == "keep"]
+    all_paths_in_config <- get_list_paths(config_list)
+    if (any(!is.null(all_paths_in_config))) {
+      config_list_path <- normalize_path_winslash(
+        all_paths_in_config,
+        mustWork = FALSE
+      )
+      res_new <- res[!res$path %in% config_list_path, ]
+      config_flat_paths <- sapply(config_list, function(x) x[["path"]])
+      config_flat_paths <-
+        config_flat_paths[!names(config_flat_paths) == "keep"]
+    } else {
+      res_new <- res
+      config_flat_paths <- NULL
+    }
   } else {
-    res_existing <- res[FALSE, ]
     res_new <- res
     config_flat_paths <- NULL
   }
@@ -133,12 +144,13 @@ check_not_registered_files <- function(path = ".", guess = TRUE, to_csv = TRUE, 
     write.csv(res_new, csv_file, row.names = FALSE)
     cli::cli_text(
       cli::cli_alert_info(c(
-        "\nSome files in your package are not registered in the configuration file: {config_file}",
+        "\nSome files in your package are not registered in the configuration file stored in {config_file}: ",
+        paste(res_new$path, collapse = ", "),
         "\n{.pkg fusen} uses a configuration file to store the structure of your package and help you clean it when needed.",
         "\nYou will find a list of unregistered files there: {.path csv_file}",
         " that you can open with {.run file.edit('{csv_file}')}",
-        "\nDelete unregistered files that you do not need anymore. Then run {.fn fusen::register_all_to_config}.",
-        "\nAfter that, this message should not appear in your next {.fn fusen::inflate_all} calls.",
+        "\n\nDelete unregistered files that you do not need anymore. Then run {.fn fusen::register_all_to_config}.",
+        "\nAfter that, this message should not appear in your next {.fn fusen::check_not_registered_files} or {.fn fusen::inflate_all} calls.",
         "\nFor more information, read `vignette('{.vignette [register-files-in-config](fusen::register-files-in-config)}', package = 'fusen')`"
       ))
     )
@@ -197,18 +209,29 @@ get_list_paths <- function(config_list) {
   }))
 }
 
-#' Add a tibble of files and types to add to the 'fusen' config file along with inflate parameters
+#' Add a tibble of files and types to add to the 'fusen'
+#'  config file along with inflate parameters
 #'
 #' @param df_files A data.frame with 'type' and 'path' columns
 #' or a csv file path as issued from `[check_not_registered_files()]`
 #' or nothing (and it will take the csv file in "dev/")
-#' @param flat_file_path Character. Usually set to `"keep"` for users. You can use the name of the origin flat file but this is more of an internal use, as inflating the flat file should have the same result.
+#' @param flat_file_path Character. Usually set to `"keep"` for users.
+#' You can use the name of the origin flat file but this is more of
+#' an internal use, as inflating the flat file should have the same result.
 #' @param state Character. Whether if the flat file is `active` or `deprecated`.
-#' @param force Logical. Whether to force writing the configuration file even is some files do not exist.
-#' @param clean Logical. Delete list associated to a specific flat file before updating the whole list.
-#' Default is set to TRUE during `inflate()` of a specific flat file, as the list should only contain files created during the inflate.
-#' This could be set to FALSE with a direct use of `df_to_config()` too. This is forced to FALSE for "keep" section.
-#' @param inflate_parameters list of parameters passed through a call to `inflate()`
+#' @param config_file Path to the configuration file
+#' @param force Logical. Whether to force writing the configuration
+#' file even is some files do not exist.
+#' @param clean Logical (TRUE, FALSE) or character ("ask", "yes", "no).
+#' Whether to delete files created in a previous version of this flat file
+#' Default is set to "ask" during `inflate()` of a specific flat file,
+#' as the list should only contain files created during the inflate.
+#' This could be set to FALSE with a direct use of `df_to_config()` too.
+#' This is forced to FALSE for the "keep" section.
+#' @param inflate_parameters list of parameters passed through
+#' a call to `inflate()`
+#' @param update_params Logical. Whether to update the inflate parameters
+#' along with other information in the config file.
 
 #' @importFrom stats setNames
 #' @importFrom utils read.csv
@@ -218,18 +241,28 @@ get_list_paths <- function(config_list) {
 #' Side effect: create a yaml config file.
 #'
 #' @seealso
-#'   [check_not_registered_files()] for the list of files not already associated with a flat file in the config file,
-#'   [register_all_to_config()] for automatically registering all files already present in the project
+#'   [check_not_registered_files()] for the list of files not already
+#'  associated with a flat file in the config file,
+#'   [register_all_to_config()] for automatically registering
+#'  all files already present in the project
 #'
 #' @noRd
 
 df_to_config <- function(df_files,
                          flat_file_path = "keep",
                          state = c("active", "deprecated"),
+                         config_file,
                          force = FALSE,
-                         clean = TRUE,
-                         inflate_parameters = NULL) {
-  config_file <- getOption("fusen.config_file", default = "dev/config_fusen.yaml")
+                         clean = "ask",
+                         inflate_parameters = NULL,
+                         update_params = TRUE) {
+  if (missing(config_file)) {
+    config_file <- getOption(
+      "fusen.config_file",
+      default = "dev/config_fusen.yaml"
+    )
+  }
+
   state <- match.arg(state, several.ok = FALSE)
 
   # User entry verifications
@@ -241,7 +274,10 @@ df_to_config <- function(df_files,
   if (!is.data.frame(df_files) && file.exists(df_files)) {
     df_files <- read.csv(df_files, stringsAsFactors = FALSE)
   } else if (!is.data.frame(df_files) && !file.exists(df_files)) {
-    stop("'", df_files, "' does not exist. You can run `check_not_registered_files()` before.")
+    stop(
+      "'", df_files, "' does not exist. You can run ",
+      "`check_not_registered_files()` before."
+    )
   }
 
   # Then if is.data.frame(df_files)
@@ -269,7 +305,11 @@ df_to_config <- function(df_files,
       )
       if (isTRUE(force)) {
         cli_alert_warning(
-          paste(msg, "\nHowever, you forced to write it in the yaml file with `force = TRUE`.")
+          paste(
+            msg,
+            "\nHowever, you forced to write it in the yaml",
+            " file with `force = TRUE`."
+          )
         )
       } else {
         stop(msg)
@@ -286,7 +326,12 @@ df_to_config <- function(df_files,
     )
   }
 
-  if (!all(grepl("^R$|^r$|^test$|^tests$|^vignette$|^vignettes$", df_files[["type"]]))) {
+  if (!all(
+    grepl(
+      "^R$|^r$|^test$|^tests$|^vignette$|^vignettes$",
+      df_files[["type"]]
+    )
+  )) {
     stop("Only types 'R', 'test' or 'vignette' are allowed")
   }
   all_exists <- file.exists(df_files[["path"]])
@@ -305,7 +350,10 @@ df_to_config <- function(df_files,
 
     if (isTRUE(force)) {
       cli_alert_warning(
-        paste(msg, "\nHowever, you forced to write it in the yaml file with `force = TRUE`.")
+        paste(
+          msg,
+          "\nHowever, you forced to write it in the yaml file with `force = TRUE`."
+        )
       )
     } else {
       stop(msg)
@@ -313,7 +361,11 @@ df_to_config <- function(df_files,
   }
 
   if (!is.null(inflate_parameters) & flat_file_path == "keep") {
-    stop("The purpose of using \"keep\" is to store files created without inflate(). Therefore it is not allowed to provide inflate_parameters")
+    stop(
+      "The purpose of using \"keep\" is to store files",
+      " created without inflate(). ",
+      " Therefore it is not allowed to provide inflate_parameters"
+    )
   }
 
   # Remove common part between config_file and all path
@@ -332,30 +384,47 @@ df_to_config <- function(df_files,
   }
 
   # All origin path should exist, if not "keep"
-  if (!isTRUE(force) || isTRUE(all(file.exists(df_files$origin[df_files$origin != "keep"])))) {
+  if (
+    !isTRUE(force) ||
+      isTRUE(all(file.exists(df_files$origin[df_files$origin != "keep"])))
+  ) {
     df_files$origin[df_files$origin != "keep"] <- gsub(
       paste0(normalize_path_winslash("."), "/"),
       "",
-      normalize_path_winslash(df_files$origin[df_files$origin != "keep"], mustWork = TRUE),
+      normalize_path_winslash(
+        df_files$origin[df_files$origin != "keep"],
+        mustWork = TRUE
+      ),
       fixed = TRUE
     )
-  } else if (isFALSE(all(file.exists(df_files$origin[df_files$origin != "keep"])))) {
+  } else if (
+    isFALSE(all(file.exists(df_files$origin[df_files$origin != "keep"])))
+  ) {
     warning(
       "Please open a bug on {fusen} package with this complete message:\n",
       "There is an error in the df_to_config process.\n",
       "Files origin do not exist but will be registered as is in the config file:\n",
-      paste(df_files$origin[!file.exists(df_files$origin[df_files$origin != "keep"])],
+      paste(
+        df_files$origin[
+          !file.exists(df_files$origin[df_files$origin != "keep"])
+        ],
         collapse = ", "
       )
     )
   }
 
   if (any(duplicated(df_files$path))) {
-    msg <- paste("Some paths appear multiple times in df_files. Please remove duplicated rows: ", paste(unique(df_files$path[duplicated(df_files$path)]), collapse = ", "))
+    msg <- paste(
+      "Some paths appear multiple times in df_files. Please remove duplicated rows: ",
+      paste(unique(df_files$path[duplicated(df_files$path)]), collapse = ", ")
+    )
 
     if (isTRUE(force)) {
       cli_alert_warning(
-        paste(msg, "\nHowever, you forced to write it in the yaml file with `force = TRUE`.")
+        paste(
+          msg,
+          "\nHowever, you forced to write it in the yaml file with `force = TRUE`."
+        )
       )
     } else {
       stop(msg)
@@ -366,23 +435,32 @@ df_to_config <- function(df_files,
     complete_yaml <- read_yaml(config_file)
 
     yaml_paths <- get_list_paths(complete_yaml)
-    yaml_paths <- yaml_paths[!grepl("inflate\\.", names(yaml_paths))]
-    all_exists <- file.exists(yaml_paths)
-    if (!all(all_exists)) {
-      msg <- paste(
-        "Some paths in config_file do not exist:",
-        paste(
-          yaml_paths[!all_exists],
-          collapse = ", "
-        ), ".\n",
-        "Please open the configuration file: ", config_file, " to verify, and delete the non-existing files if needed."
-      )
-      if (isTRUE(force)) {
-        cli_alert_warning(
-          paste(msg, "However, you forced to write it in the yaml file with `force = TRUE`.")
+    if (all(is.null(yaml_paths))) {
+      complete_yaml <- list()
+    } else if (any(!is.null(yaml_paths))) {
+      yaml_paths <- yaml_paths[!grepl("inflate\\.", names(yaml_paths))]
+      all_exists <- file.exists(yaml_paths)
+      if (!all(all_exists)) {
+        msg <- paste(
+          "Some paths in config_file do not exist:",
+          paste(
+            yaml_paths[!all_exists],
+            collapse = ", "
+          ), ".\n",
+          "Please open the configuration file: ",
+          config_file,
+          " to verify, and delete the non-existing files if needed."
         )
-      } else {
-        stop(msg)
+        if (isTRUE(force)) {
+          cli_alert_warning(
+            paste(
+              msg,
+              "However, you forced to write it in the yaml file with `force = TRUE`."
+            )
+          )
+        } else {
+          stop(msg)
+        }
       }
     }
   } else {
@@ -401,7 +479,8 @@ df_to_config <- function(df_files,
         each_flat_file_path[x],
         state = state[x],
         clean = ifelse(each_flat_file_path[x] == "keep", FALSE, clean),
-        inflate_parameters = inflate_parameters
+        inflate_parameters = inflate_parameters,
+        update_params = update_params
       )
     }
   ) %>%
@@ -412,7 +491,7 @@ df_to_config <- function(df_files,
   if (length(all_modified) != 0) {
     cli_alert_info(
       paste0(
-        "Some files group already existed and were ", ifelse(isTRUE(clean), "overwritten: ", "modified: "),
+        "Some files group already existed and were modified: ",
         paste(all_modified, collapse = ", ")
       )
     )
@@ -481,16 +560,20 @@ files_list_to_vector <- function(list_of_files) {
 #' @param complete_yaml The list as output of config_yaml file
 #' @param flat_file_path The group to update
 #' @param state Character. See `df_to_config()`.
-#' @param clean Logical. See `df_to_config()`.
+#' @param clean Logical (TRUE, FALSE) or character ("ask", "yes", "no).
+#'  See `df_to_config()`.
 #' @param inflate_parameters See `df_to_config()`.
+#' @param update_params Logical. See `df_to_config()`.
 #' @importFrom cli cli_alert_warning cli_alert_success
 #' @noRd
-update_one_group_yaml <- function(df_files,
-                                  complete_yaml,
-                                  flat_file_path,
-                                  state = c("active", "deprecated"),
-                                  clean = TRUE,
-                                  inflate_parameters = NULL) {
+update_one_group_yaml <- function(
+    df_files,
+    complete_yaml,
+    flat_file_path,
+    state = c("active", "deprecated"),
+    clean = "ask",
+    inflate_parameters = NULL,
+    update_params = TRUE) {
   state <- match.arg(state, several.ok = FALSE)
   all_keep_before <- complete_yaml[[basename(flat_file_path)]]
 
@@ -498,7 +581,7 @@ update_one_group_yaml <- function(df_files,
   df_files_filtered <- df_files[df_files[["origin"]] == flat_file_path, ]
 
   # All already in the list will be deleted except if clean is FALSE
-  if (isTRUE(clean)) {
+  if (isTRUE(clean) || clean %in% c("yes", "ask")) {
     this_group_list <- list(
       path = flat_file_path,
       state = state,
@@ -512,7 +595,7 @@ update_one_group_yaml <- function(df_files,
         grepl("^vignette$|^vignettes$", df_files_filtered[["type"]])
       ])
     )
-  } else {
+  } else if (isFALSE(clean) || clean %in% c("no")) {
     this_group_list <- list(
       path = flat_file_path,
       state = state,
@@ -534,51 +617,124 @@ update_one_group_yaml <- function(df_files,
       )),
       vignettes = unique(c(
         # new ones
-        df_files_filtered[["path"]][grepl("^vignette$|^vignettes$", df_files_filtered[["type"]])],
+        df_files_filtered[["path"]][
+          grepl(
+            "^vignette$|^vignettes$",
+            df_files_filtered[["type"]]
+          )
+        ],
         # previous ones
         unlist(all_keep_before[["vignettes"]])
       ))
     )
+  } else {
+    stop("clean should be TRUE, FALSE, 'yes', 'no' or 'ask'")
   }
 
   this_group_list_return <- this_group_list
-  this_group_list_message <- this_group_list
   if (!is.null(inflate_parameters)) {
-    this_group_list_return <- c(this_group_list, list(inflate = inflate_parameters))
-    this_group_list_message <- c(this_group_list, list(inflate = "each parameter"))
+    if (isFALSE(update_params)) {
+      inflate_parameters_new <-
+        all_keep_before[["inflate"]]
+      # Still modify flat_file_path and vignette_name
+      inflate_parameters_new[["flat_file"]] <-
+        inflate_parameters$flat_file
+      inflate_parameters_new[["vignette_name"]] <-
+        inflate_parameters$vignette_name
+    } else if (isTRUE(update_params)) {
+      inflate_parameters_new <- inflate_parameters
+    }
+    this_group_list_return <- c(
+      this_group_list, list(inflate = inflate_parameters_new)
+    )
   }
 
   # Messages only
-  all_names <- names(this_group_list_message)
-  those_removed <- lapply(
+  all_names <- c("R", "tests", "vignettes")
+  # names(this_group_list_message)
+  files_removed <- lapply(
     all_names,
     function(x) {
       setdiff(
         all_keep_before[[x]],
-        this_group_list_message[[x]]
+        this_group_list_return[[x]]
       )
     }
   ) %>%
     setNames(all_names)
+  files_removed_vec <- files_list_to_vector(files_removed)
 
-  those_removed_vec <- files_list_to_vector(those_removed)
-  those_added <- lapply(
+  files_added <- lapply(
     all_names,
     function(x) {
       setdiff(
-        this_group_list_message[[x]],
+        this_group_list_return[[x]],
         all_keep_before[[x]]
       )
     }
   ) %>%
     setNames(all_names)
-  those_added_vec <- files_list_to_vector(those_added)
+  files_added_vec <- files_list_to_vector(files_added)
 
-  if (!is.null(those_removed_vec) || length(those_removed_vec) != 0) {
-    silent <- lapply(paste(those_removed_vec, "was removed from the config file"), cli_alert_warning)
+  if (!is.null(files_removed_vec) || length(files_removed_vec) != 0) {
+    if (clean == "ask") {
+      cli_alert_warning(
+        paste0(
+          "Some files are not anymore created from ",
+          flat_file_path, ".\n",
+          "You may have rename some functions or moved them to another flat:",
+          "\n",
+          paste(files_removed_vec, collapse = ", "), ".\n\n",
+          "Below, you are ask if you want to remove them from the repository.",
+          "\n\n",
+          "Note: to not see this message again, use `clean = TRUE` in the ",
+          "`inflate()` command of this flat file : ", flat_file_path, ".\n",
+          "Use with caution. ",
+          "It is recommended to use git to check the changes...\n"
+        )
+      )
+      sure <- paste(
+        paste(files_removed_vec, collapse = ", "),
+        "\nDo you want to remove all these files from the repository? (y/n)\n"
+      )
+
+      do_it <- readline(sure) == "y" || readline(sure) == "yes"
+    } else if (isTRUE(clean) || clean == "yes") {
+      do_it <- TRUE
+    } else if (isFALSE(clean) || clean == "no") {
+      do_it <- FALSE
+    } else {
+      stop("clean should be TRUE, FALSE, 'yes', 'no' or 'ask'")
+    }
+
+    if (isTRUE(do_it)) {
+      files_removed_filename <- unlist(files_removed)
+      files_removed_filename_exists <-
+        files_removed_filename[file.exists(files_removed_filename)]
+      file.remove(files_removed_filename_exists)
+
+      silent <- lapply(
+        paste(
+          files_removed_vec, "was removed from the config file",
+          "and from the repository"
+        ),
+        cli_alert_warning
+      )
+    } else if (isFALSE(do_it)) {
+      silent <- lapply(
+        paste(
+          files_removed_vec, "was removed from the config file",
+          "but kept in the repository"
+        ),
+        cli_alert_warning
+      )
+    }
   }
-  if (!is.null(those_added_vec) || length(those_added_vec) != 0) {
-    silent <- lapply(paste(those_added_vec, "was added to the config file"), cli_alert_success)
+  if (!is.null(files_added_vec) || length(files_added_vec) != 0) {
+    silent <- lapply(
+      paste(files_added_vec, "was added to the config file"),
+      cli_alert_success
+    )
   }
 
   return(this_group_list_return)
@@ -589,6 +745,7 @@ update_one_group_yaml <- function(df_files,
 #' Helps transition from non-fusen packages or made with earlier version
 #'
 #' @param pkg Path to the package from which to add file to configuration file
+#' @param config_file Path to the configuration file
 #' @return Invisible path to 'fusen' configuration file
 #'
 #' @seealso
@@ -624,11 +781,20 @@ update_one_group_yaml <- function(df_files,
 #'   # Look at the output
 #'   yaml::read_yaml(out_path)
 #' })
-register_all_to_config <- function(pkg = ".") {
-  # Use the function to check the list of files
-  out_df <- check_not_registered_files(pkg, to_csv = FALSE, open = FALSE)
+register_all_to_config <- function(pkg = ".", config_file) {
+  if (missing(config_file)) {
+    config_file <- getOption(
+      "fusen.config_file",
+      default = "dev/config_fusen.yaml"
+    )
+  }
 
-  config_file <- getOption("fusen.config_file", default = "dev/config_fusen.yaml")
+  # Use the function to check the list of files
+  out_df <- check_not_registered_files(pkg,
+    config_file = config_file, to_csv = FALSE, open = FALSE
+  )
+
+
   if (is.null(out_df)) {
     message("There is no file to register or everything was already registered")
     return(config_file)
@@ -637,11 +803,20 @@ register_all_to_config <- function(pkg = ".") {
   # Deal with files linked to a flat file that is already registered
   # Change them to "keep"
   out_df_keep <- deal_with_registered_keep(out_df)
-  out_config <- df_to_config(df_files = out_df_keep, clean = FALSE)
+  out_config <- df_to_config(
+    df_files = out_df_keep,
+    clean = FALSE,
+    config_file = config_file
+  )
 
   # Delete out_df
   csv_file <- file.path(
-    gsub(paste0(normalize_path_winslash(getwd()), "/"), "", dirname(normalize_path_winslash(config_file, mustWork = FALSE)), fixed = TRUE), "config_not_registered.csv"
+    gsub(
+      paste0(normalize_path_winslash(getwd()), "/"), "",
+      dirname(normalize_path_winslash(config_file, mustWork = FALSE)),
+      fixed = TRUE
+    ),
+    "config_not_registered.csv"
   )
   if (file.exists(csv_file)) {
     cli::cat_rule(paste("Delete", csv_file))

@@ -1,10 +1,10 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----setup--------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(fusen)
 
 ## -----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ library(fusen)
 ## -----------------------------------------------------------------------------
 #  fusen::inflate(flat_file = "dev/flat_full.Rmd", vignette_name = "Get started")
 
-## ----examples-init_share_on_github, eval = FALSE------------------------------
+## ----examples-init_share_on_github--------------------------------------------
 #  #' \dontrun{
 #  #' # This modifies the current directory and send it on GitHub
 #  init_share_on_github()

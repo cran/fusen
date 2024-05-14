@@ -2,11 +2,12 @@
 
 #' Initiate GitHub to share your package on a website
 #'
-#' This uses {pkgdown} to share the documentation of the package through GitHub Actions.
+#' This uses 'pkgdown' to share the documentation of the package through GitHub Actions.
 #' You may need to run `usethis::create_github_token()`, then `gitcreds::gitcreds_set()` before.
 #'
 #' @param ask Logical. `TRUE` (default) to ask the user to apply the instructions each time needed,
 #' or `FALSE` if the user already know what to do.
+#' @inheritParams usethis::use_github
 #'
 #' @details
 #'
@@ -21,7 +22,7 @@
 #' - Init continuous integration (CI)
 #'   + Check the package on Linux, Windows and MacOS
 #'   + Calculate code coverage. Note that you may need to connect to <https://about.codecov.io/> to see the results of the code coverage.
-#' - Init continuous deployment (CD) of the {pkgdown} website documentation
+#' - Init continuous deployment (CD) of the 'pkgdown' website documentation
 #' - Commit and push to GitHub
 #' - List remaining manual steps to make the website public
 #'
@@ -35,7 +36,7 @@
 #' # This modifies the current directory and send it on GitHub
 #' init_share_on_github()
 #' }
-init_share_on_github <- function(ask = TRUE) {
+init_share_on_github <- function(ask = TRUE, organisation = NULL) {
   pkg <- "."
 
   if (!requireNamespace("gert", quietly = TRUE)) {
@@ -88,7 +89,7 @@ init_share_on_github <- function(ask = TRUE) {
       dont_do_it <- FALSE
     }
     if (do_it) {
-      usethis::use_github()
+      usethis::use_github(organisation = organisation)
     } else {
       cli::cli_text(
         cli::cli_alert_info(
