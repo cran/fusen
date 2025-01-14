@@ -36,7 +36,9 @@ This function should avoid remaining inflated files in the repository, and ensur
 dev_file <- suppressMessages(
   add_flat_template(
     template = "add",
-    pkg = ".", overwrite = TRUE, open = FALSE
+    pkg = ".",
+    overwrite = TRUE,
+    open = FALSE
   )
 )
 rename_flat_file(
@@ -50,7 +52,7 @@ rename_flat_file(
 
 ## Fully deprecate a flat file after inflate
 
-'fusen' serves as a framework to ensure that developers prioritize end-users during the function development process. By employing 'fusen' within Rmd/Qmd files, developers can conceptualize their product and articulate their ideas in plain text before initiating any code. This approach encourages consideration of the package's users: their intended actions, and the potential impact on their experiences. Consequently, developers can draft function documentation prior to its implementation, thinking about explaining what's behind the black box, as well as reminding that this may end into the vignette.
+'fusen' serves as a framework to ensure that developers prioritize end-users during the function development process. By employing 'fusen' within Rmd/qmd files, developers can conceptualize their product and articulate their ideas in plain text before initiating any code. This approach encourages consideration of the package's users: their intended actions, and the potential impact on their experiences. Consequently, developers can draft function documentation prior to its implementation, thinking about explaining what's behind the black box, as well as reminding that this may end into the vignette.
 
 Additionally, 'fusen' offers a minimal template comprising 'function', 'doc', and 'test' components. We advocate for Test Driven Development (TDD), where writing tests precedes function implementation. This practice aids in function design and enables anticipation of future behavior.
 
@@ -73,7 +75,9 @@ To facilitate this transition, the function `deprecate_flat_file()` is provided.
 dev_file <- suppressMessages(
   add_flat_template(
     template = "add",
-    pkg = dummypackage, overwrite = TRUE, open = FALSE
+    pkg = dummypackage,
+    overwrite = TRUE,
+    open = FALSE
   )
 )
 deprecate_flat_file(flat_file = "dev/flat_additional.Rmd")

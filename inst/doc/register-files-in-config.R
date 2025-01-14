@@ -30,8 +30,10 @@ library(fusen)
 #  usethis::with_project(dummypackage, {
 #    suppressMessages(
 #      inflate(
-#        pkg = dummypackage, flat_file = flat_file,
-#        vignette_name = "Get started", check = FALSE,
+#        pkg = dummypackage,
+#        flat_file = flat_file,
+#        vignette_name = "Get started",
+#        check = FALSE,
 #        open_vignette = FALSE
 #      )
 #    )
@@ -73,8 +75,10 @@ library(fusen)
 #  usethis::with_project(dummypackage, {
 #    suppressMessages(
 #      inflate(
-#        pkg = dummypackage, flat_file = flat_file,
-#        vignette_name = "Get started", check = FALSE,
+#        pkg = dummypackage,
+#        flat_file = flat_file,
+#        vignette_name = "Get started",
+#        check = FALSE,
 #        open_vignette = FALSE
 #      )
 #    )

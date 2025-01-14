@@ -14,6 +14,7 @@ inflate(
   overwrite = "ask",
   clean = "ask",
   update_params = TRUE,
+  codecov = FALSE,
   ...
 )
 }
@@ -44,6 +45,9 @@ in the flat file. Default to "ask".}
 \item{update_params}{Logical. Whether to update the inflate parameters
 in the configuration file.}
 
+\item{codecov}{Logical.
+Whether to compute code coverage with \code{covr::package_coverage()}.}
+
 \item{...}{Arguments passed to \code{devtools::check()}.
 For example, you can do \code{inflate(check = TRUE, quiet = TRUE)},
 where \code{quiet} is passed to \code{devtools::check()}.}
@@ -64,8 +68,10 @@ dev_file <- add_flat_template(template = "full", pkg = dummypackage, overwrite =
 flat_file <- dev_file[grepl("flat", dev_file)]
 fill_description(pkg = dummypackage, fields = list(Title = "Dummy Package"))
 inflate(
-  pkg = dummypackage, flat_file = flat_file,
-  vignette_name = "Exploration of my Data", check = FALSE
+  pkg = dummypackage,
+  flat_file = flat_file,
+  vignette_name = "Exploration of my Data",
+  check = FALSE
 )
 
 # Explore directory of the package
