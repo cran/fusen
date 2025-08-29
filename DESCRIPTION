@@ -1,6 +1,6 @@
 Package: fusen
 Title: Build a Package from Rmarkdown Files
-Version: 0.7.1
+Version: 0.7.2
 Authors@R: c(
     person("Sebastien", "Rochette", , "sebastienrochettefr@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0002-1565-9313", "creator")),
@@ -32,12 +32,13 @@ Encoding: UTF-8
 Language: en-US
 RoxygenNote: 7.3.2
 NeedsCompilation: no
-Packaged: 2025-01-25 18:06:59 UTC; srochett
-Author: Sebastien Rochette [aut] (<https://orcid.org/0000-0002-1565-9313>,
-    creator),
-  Vincent Guyader [aut, cre] (<https://orcid.org/0000-0003-0671-9270>),
+Packaged: 2025-08-04 13:50:07 UTC; PC
+Author: Sebastien Rochette [aut] (ORCID:
+    <https://orcid.org/0000-0002-1565-9313>, creator),
+  Vincent Guyader [aut, cre] (ORCID:
+    <https://orcid.org/0000-0003-0671-9270>),
   Yohann Mansiaux [aut],
   ThinkR [cph]
 Maintainer: Vincent Guyader <vincent@thinkr.fr>
 Repository: CRAN
-Date/Publication: 2025-01-26 07:10:02 UTC
+Date/Publication: 2025-08-29 16:00:08 UTC
